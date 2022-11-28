@@ -1,10 +1,9 @@
 #!/bin/bash
 GENESIS=https://raw.githubusercontent.com/unification-com/mainnet/master/latest/genesis.json
-GENESIS_UND=https://github.com/unification-com/mainchain/releases/download/1.5.1/und_v1.5.1_linux_x86_64.tar.gz
 UND=https://github.com/unification-com/mainchain/releases/download/v1.6.3/und_v1.6.3_linux_x86_64.tar.gz
 COSMOVISOR=https://github.com/cosmos/cosmos-sdk/releases/download/cosmovisor%2Fv1.2.0/cosmovisor-v1.2.0-linux-amd64.tar.gz
 
-# echo -e "\n!!!CAUTION!!! Script will destroy .und_mainchain in the $HOME directory and und in /usr/local/bin do you wish to continue?> [y] or [n]\n"
+# echo -e "\n!!!CAUTION!!! Script will destroy .und_mainchain in the $HOME directory \n and und/cosmovisor in /usr/local/bin do you wish to continue?> [y] or [n]\n"
 read -p "Input node moniker/name> " MONIKER
 
 #Removing old directories and files
@@ -18,14 +17,13 @@ sudo rm -r /etc/systemd/system/und.service
 #Making new working directories
 mkdir $HOME/UNDBackup
 mkdir $HOME/temp
-mkdir $HOME/temp/main_und
-mkdir $HOME/temp/genesis_und
+mkdir $HOME/temp/und
 mkdir $HOME/temp/cosmovisor
 
 #Setting up UND
-wget $UND -P $HOME/temp/main_und
-tar -zxvf $HOME/temp/main_und/$(ls $HOME/temp/main_und) -C $HOME/temp/main_und
-sudo mv $HOME/temp/main_und/und /usr/local/bin
+wget $UND -P $HOME/temp/und
+tar -zxvf $HOME/temp/und/$(ls $HOME/temp/und) -C $HOME/temp/und
+sudo cp $HOME/temp/und/und /usr/local/bin
 und init $MONIKER
 curl $GENESIS > $HOME/.und_mainchain/config/genesis.json
 cp $HOME/.und_mainchain/config/priv_validator_key.json $HOME/UNDBackup
@@ -51,12 +49,10 @@ EOF
 
 #Setting up Cosmovisor
 wget $COSMOVISOR -P $HOME/temp/cosmovisor
-wget $GENESIS_UND -P $HOME/temp/genesis_und
-tar -zxvf $HOME/temp/genesis_und/$(ls $HOME/temp/genesis_und) -C $HOME/temp/genesis_und
 tar -zxvf $HOME/temp/cosmovisor/$(ls $HOME/temp/cosmovisor) -C $HOME/temp/cosmovisor
 mkdir -p $HOME/.und_mainchain/cosmovisor/genesis/bin
 mkdir $HOME/.und_mainchain/cosmovisor/upgrades
-mv $HOME/temp/genesis_und/und $HOME/.und_mainchain/cosmovisor/genesis/bin
+mv $HOME/temp/und/und $HOME/.und_mainchain/cosmovisor/genesis/bin
 sudo mv $HOME/temp/cosmovisor/cosmovisor /usr/local/bin
 tee $HOME/.und_mainchain/cosmovisor/UND_COSMOVISOR_ENV > /dev/null <<EOF
 DAEMON_NAME=und
