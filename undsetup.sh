@@ -5,7 +5,7 @@ UND=https://github.com/unification-com/mainchain/releases/download/v1.6.3/und_v1
 COSMOVISOR=https://github.com/cosmos/cosmos-sdk/releases/download/cosmovisor%2Fv1.2.0/cosmovisor-v1.2.0-linux-amd64.tar.gz
 
 # echo -e "\n!!!CAUTION!!! Script will destroy .und_mainchain in the $HOME directory and und in /usr/local/bin do you wish to continue?> [y] or [n]\n"
-read -p "Input node moniker> " MONIKER
+read -p "Input node moniker/name> " MONIKER
 
 #Removing old directories and files
 sudo rm -r $HOME/.und_mainchain
