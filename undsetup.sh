@@ -7,6 +7,9 @@ COSMOVISOR=https://github.com/cosmos/cosmos-sdk/releases/download/cosmovisor%2Fv
 read -p "Input node moniker/name> " MONIKER
 
 #Removing old directories and files
+sudo systemctl daemon-reload
+sudo systemctl stop und
+sudo systemctl disable und
 sudo rm -r $HOME/.und_mainchain
 sudo rm -r $HOME/temp
 sudo rm -r $HOME/UNDBackup
@@ -61,13 +64,19 @@ DAEMON_RESTART_AFTER_UPGRADE=true
 DAEMON_RESTART_DELAY=5s
 EOF
 
-
 #Editing configs
 HANDH=$(curl -s https://rest.unification.io/blocks/latest | jq '.|[.block_id.hash,.block.header.height]')
 HASH="${HANDH:4:66}"
 HEIGHT="${HANDH:75:7}"
-#sed -i 's/discovery_time = \"15s"/discovery_time = \"30s"' $HOME/.und_mainchain/config/config.toml
-# sed -i "s/enable = false/enable = true" $HOME/.und_mainchain/config/config.toml
-# sed -i "s/enable = false/enable = true" $HOME/.und_mainchain/config/config.toml
+sed -i "s/enable = false/enable = true/" $HOME/.und_mainchain/config/config.toml
 sed -i "s/trust_height = 0/trust_height = $HEIGHT/" $HOME/.und_mainchain/config/config.toml
-# sed -i "s/trust_hash = 0/trust_hash = $HASH/" $HOME/.und_mainchain/config/config.toml
+sed -i 's/trust_hash = ""/trust_hash = '"$HASH"'/' $HOME/.und_mainchain/config/config.toml
+sed -i 's/rpc_servers = ""/rpc_servers = "sync1.unification.io:26657,sync2.unification.io:26657"/' $HOME/.und_mainchain/config/config.toml
+sed -i 's/discovery_time = "15s"/discovery_time = "30s"/' $HOME/.und_mainchain/config/config.toml
+sed -i 's/chunk_request_timeout = "10s"/chunk_request_timeout = "60s"/' $HOME/.und_mainchain/config/config.toml
+sed -i 's/seeds = ""/seeds = "0c2b65bc604a18a490f5f55bb7b4140cfb512ced@seed1.unification.io:26656,e66e0f89af19da09f676c85b262d591b8c2bb9d8@seed2.unification.io:26656"/' $HOME/.und_mainchain/config/config.toml
+
+#Startup
+sudo systemctl daemon-reload
+sudo systemctl start und
+sudo journalctl -u und -f
