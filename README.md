@@ -5,7 +5,7 @@ Currently, the script is set to use UND v1.6.3 and COSMOVISOR v1.2.0
 
 No upgrade is currently in place for the next UND version within the COSMOVISOR Files
 
-****THIS SCRIPT WILL DESTROY THE FOLLOWING FILES IF PRESENT****
+<<<THIS SCRIPT WILL DESTROY THE FOLLOWING FILES IF PRESENT>>>
 
 -$HOME/.und_mainchain
 -$HOME/temp
