@@ -24,6 +24,12 @@ No upgrade is currently in place for the next UND version within the COSMOVISOR 
 
 *USAGE:*
 
+PREREQUISITES:
+
+-jq
+
+-wget
+
 Simply run ./undsetup.sh from your terminal
 
 If the node is stuck endlessly on "Dialing peer address" then run the script once again.
