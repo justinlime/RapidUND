@@ -28,5 +28,7 @@ Simply run ./undsetup.sh from your terminal
 
 If the node is stuck on "Dialing peer address" then run the script once again.
 
+If you have SELinux installed it may block the und.service file for the daemon, only workaround I know of is to disable SELinux in /etc/selinux/config
+
 
 
