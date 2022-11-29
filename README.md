@@ -1,5 +1,5 @@
 # RapidUND
-Bash script to rapidly deploy an UND Node with StateSync/Cosmovisor as Daemon
+#### Bash script to rapidly deploy an UND Node with StateSync/Cosmovisor as Daemon
 
 Currently, the script is set to use UND v1.6.3 and COSMOVISOR v1.2.0
 
@@ -8,7 +8,7 @@ No upgrade is currently in place for the next UND version within the COSMOVISOR 
 
 
 
-*!!!THIS SCRIPT WILL DESTROY THE FOLLOWING FILES IF PRESENT!!!*
+## *!!!THIS SCRIPT WILL DESTROY THE FOLLOWING FILES IF PRESENT!!!*
 
 -$HOME/.und_mainchain
 
@@ -24,7 +24,7 @@ No upgrade is currently in place for the next UND version within the COSMOVISOR 
 
 
 
-*PREREQUISITES:*
+## *PREREQUISITES:*
 
 -jq
 
@@ -32,7 +32,7 @@ No upgrade is currently in place for the next UND version within the COSMOVISOR 
 
 
 
-*USAGE:*
+## *USAGE:*
 
 Simply run ./undsetup.sh from your terminal
 
