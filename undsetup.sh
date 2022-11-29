@@ -3,7 +3,22 @@ GENESIS=https://raw.githubusercontent.com/unification-com/mainnet/master/latest/
 UND=https://github.com/unification-com/mainchain/releases/download/v1.6.3/und_v1.6.3_linux_x86_64.tar.gz
 COSMOVISOR=https://github.com/cosmos/cosmos-sdk/releases/download/cosmovisor%2Fv1.2.0/cosmovisor-v1.2.0-linux-amd64.tar.gz
 
-# echo -e "\n!!!CAUTION!!! Script will destroy .und_mainchain in the $HOME directory \n and und/cosmovisor in /usr/local/bin do you wish to continue?> [y] or [n]\n"
+echo -e "\n!!!CAUTION!!! This script will DESTROY the following files if present: \n\n$HOME/.und_mainchain\n$HOME/temp\n$HOME/UNDBackup\n/usr/local/bin/und\n/usr/local/bin/cosmovisor\n/etc/systemd/system/und.service\n"
+
+while true;
+do
+read -p "Do you wish to continue?[y/n]> " CHOOSE
+if [ "$CHOOSE" = "n" ];
+then
+    echo "Exiting"
+    exit
+fi
+if [ "$CHOOSE" = "y" ];
+then
+    break
+fi
+done
+
 read -p "Input node moniker/name> " MONIKER
 
 #Removing old directories and files
@@ -19,8 +34,7 @@ sudo rm -r /etc/systemd/system/und.service
 
 #Making new working directories
 mkdir $HOME/UNDBackup
-mkdir $HOME/temp
-mkdir $HOME/temp/und
+mkdir -p $HOME/temp/und
 mkdir $HOME/temp/cosmovisor
 
 #Setting up UND
@@ -76,7 +90,12 @@ sed -i 's/discovery_time = "15s"/discovery_time = "30s"/' $HOME/.und_mainchain/c
 sed -i 's/chunk_request_timeout = "10s"/chunk_request_timeout = "60s"/' $HOME/.und_mainchain/config/config.toml
 sed -i 's/seeds = ""/seeds = "0c2b65bc604a18a490f5f55bb7b4140cfb512ced@seed1.unification.io:26656,e66e0f89af19da09f676c85b262d591b8c2bb9d8@seed2.unification.io:26656"/' $HOME/.und_mainchain/config/config.toml
 
+#Cleanup
+rm -r $HOME/temp
+
 #Startup
 sudo systemctl daemon-reload
+sudo systemctl enable und
 sudo systemctl start und
 sudo journalctl -u und -f
+
