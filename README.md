@@ -52,5 +52,7 @@ The node deployed will be using default configuration given by the Unification D
 
 Pruning remains as default, this node will not act as an archive node
 
+This script is meant to be used by experienced operators, used to quickly deploy a node in a time of need or when migrating to another machine, this is not recommended if you have not yet set up a node for yourself.
+
 
 
