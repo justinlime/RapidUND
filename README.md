@@ -44,5 +44,7 @@ If you are importing a current Validator, stop both this node, and your original
 
 Script will copy node_key.json and priv_validator_key.json into $HOME/UNDBackup
 
+Node will likely fail if running a node on the current network
+
 
 
