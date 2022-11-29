@@ -22,6 +22,8 @@ No upgrade is currently in place for the next UND version within the COSMOVISOR 
 
 -/etc/systemd/system/und.service
 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 USAGE:
 
 Simply run ./undsetup.sh from your terminal
