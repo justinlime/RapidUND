@@ -30,6 +30,7 @@ No upgrade is currently in place for the next UND version within the COSMOVISOR 
 
 -wget
 
+-curl
 
 
 ## *USAGE:*
