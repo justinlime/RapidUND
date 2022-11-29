@@ -8,7 +8,7 @@ No upgrade is currently in place for the next UND version within the COSMOVISOR 
 
 
 
-!!!THIS SCRIPT WILL DESTROY THE FOLLOWING FILES IF PRESENT!!!
+*!!!THIS SCRIPT WILL DESTROY THE FOLLOWING FILES IF PRESENT!!!*
 
 -$HOME/.und_mainchain
 
@@ -22,9 +22,7 @@ No upgrade is currently in place for the next UND version within the COSMOVISOR 
 
 -/etc/systemd/system/und.service
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-USAGE:
+*USAGE:*
 
 Simply run ./undsetup.sh from your terminal
 
