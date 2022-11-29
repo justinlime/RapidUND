@@ -46,5 +46,11 @@ Script will copy node_key.json and priv_validator_key.json into $HOME/UNDBackup
 
 Node will likely fail if running a node on the current network
 
+## *DETAILS*
+
+The node deployed will be using default configuration given by the Unification Docs at https://docs.unification.io/
+
+Pruning remains as default, this node will not act as an archive node
+
 
 
