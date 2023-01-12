@@ -18,7 +18,23 @@ remove_und() {
 	sudo rm -r /etc/systemd/system/und.service
 }
 
-echo -e "\nThis script is made to rapidly deploy a Unification Node, for Testnet or Mainnet, intended for expirienced operators to rapidly redeploy. If there are any issues please report them on github.\n"
+echo "
+
+      ___          ___          ___                   ___         ___          ___          ___     
+     /\  \        /\  \        /\  \        ___      /\  \       /\__\        /\__\        /\  \    
+    /::\  \      /::\  \      /::\  \      /\  \    /::\  \     /:/  /       /::|  |      /::\  \   
+   /:/\:\  \    /:/\:\  \    /:/\:\  \     \:\  \  /:/\:\  \   /:/  /       /:|:|  |     /:/\:\  \  
+  /::\~\:\  \  /::\~\:\  \  /::\~\:\  \    /::\__\/:/  \:\__\ /:/  /  ___  /:/|:|  |__  /:/  \:\__\ 
+ /:/\:\ \:\__\/:/\:\ \:\__\/:/\:\ \:\__\__/:/\/__/:/__/ \:|__/:/__/  /\__\/:/ |:| /\__\/:/__/ \:|__|
+ \/_|::\/:/  /\/__\:\/:/  /\/__\:\/:/  /\/:/  /  \:\  \ /:/  |:\  \ /:/  /\/__|:|/:/  /\:\  \ /:/  /
+    |:|::/  /      \::/  /      \::/  /\::/__/    \:\  /:/  / \:\  /:/  /     |:/:/  /  \:\  /:/  / 
+    |:|\/__/       /:/  /        \/__/  \:\__\     \:\/:/  /   \:\/:/  /      |::/  /    \:\/:/  /  
+    |:|  |        /:/  /                 \/__/      \::/__/     \::/  /       /:/  /      \::/__/   
+     \|__|        \/__/                              ~~          \/__/        \/__/        ~~       
+
+"
+
+echo -e "\nThis script is made to rapidly deploy a Unification Node, for Testnet or Mainnet, intended for expirienced operators.\n\nIf there are any issues please report them on github.\n"
 
 while true;
 do
@@ -150,7 +166,7 @@ sed -i 's/seeds = ""/seeds = "'$SEEDS'"/' $HOME/.und_mainchain/config/config.tom
 #Cleanup
 rm -r $HOME/tempund
 
-#SELinux Fix
+#TO DO: SELinux Fix
 
 
 #Startup
