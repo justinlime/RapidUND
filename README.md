@@ -16,7 +16,7 @@ https://youtu.be/nAh_VgSNyY0
 ```
 -$HOME/.und_mainchain
 
--$HOME/temp
+-$HOME/tempund
 
 -$HOME/UNDBackup
 
@@ -48,11 +48,9 @@ If the node is stuck "Dialing peer address" for more than 10 minutes, then run t
 
 If you have SELinux installed it may block the und.service file for the daemon.
 
-If you are importing a current Validator, stop both this node, and your original node, then replace the node_key.json and priv_validator_key.json in $HOME/.und_mainchain/config with your original keys, then start this new node again. If both nodes are running at the same time with the same priv_validator_key.json you will be jailed.
+If you are importing a current Validator, stop both this node, and your original node, then replace the `node_key.json` and `priv_validator_key.json` in `$HOME/.und_mainchain/config` with your original keys, then start this new node again. If both nodes are running at the same time with the same keys your Validator will be JAILED.
 
-Script will copy node_key.json and priv_validator_key.json into $HOME/UNDBackup for safekeeping.
-
-Node will likely fail if running a node on the current network.
+Script will copy `node_key.json` and `priv_validator_key.json` into `$HOME/UNDBackup` for safekeeping.
 
 ## *DETAILS:*
 
