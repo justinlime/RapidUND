@@ -46,7 +46,7 @@ sh /path/to/undsetup.sh
 
 If the node is stuck "Dialing peer address" for more than 10 minutes, then run the script once again.
 
-If you have SELinux installed it may block the und.service file for the daemon.
+If you have `SELinux` active installed it may block the `und.service` file for the daemon.
 
 If you are importing a current Validator, stop both this node, and your original node, then replace the `node_key.json` and `priv_validator_key.json` in `$HOME/.und_mainchain/config` with your original keys, then start this new node again. 
 
