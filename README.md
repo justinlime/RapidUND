@@ -7,6 +7,8 @@ No upgrade is currently in place for the next UND version within the COSMOVISOR 
 
 Currently the TestNet option of the script is not functional, as statesync in not working properly on the TestNet.
 
+Script has been tested with CentOS and Debian, but should work with similar distributions without issue.
+
 A video demonstration can be found here:
 https://youtu.be/nAh_VgSNyY0
 
@@ -27,13 +29,13 @@ https://youtu.be/nAh_VgSNyY0
 
 
 ## *PREREQUISITES:*
-
+```
 -jq
 
 -wget
 
 -curl
-
+```
 
 ## *USAGE:*
 
