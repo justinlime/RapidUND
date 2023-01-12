@@ -7,7 +7,7 @@ RPC=sync1.unification.io:26657,sync2.unification.io:26657
 HANDH=$(curl -s https://rest.unification.io/blocks/latest | jq '.|[.block_id.hash,.block.header.height]')
 
 remove_und() {
-        sudo systemctl daemon-reload
+	sudo systemctl daemon-reload
 	sudo systemctl stop und
 	sudo systemctl disable und
 	sudo rm -r $HOME/.und_mainchain
@@ -29,22 +29,22 @@ then
 fi
 if [ "$CHOOSE" = "r" ];
 then
-     while true;
-     do
-     echo -e "\n!!!CAUTION!!!\n\nThis option will DESTROY the following files if present: \n\n$HOME/.und_mainchain\n$HOME/temp\n$HOME/UNDBackup\n/usr/local/bin/und\n/usr/local/bin/cosmovisor\n/etc/systemd/system/und.service\n"
-     read -p "Do you wish to continue?[y/n]> " CONTINUE
-     if [ "$CONTINUE" = "y" ];
-     then
-          remove_und
-          echo -e "\nAll Unification files removed\n"
-          exit
-     fi
-     if [ "$CONTINUE" = "n" ];
-     then
-	  echo -e "\nExiting\n"
-          exit
-     fi        
-     done
+	while true;
+	do
+	echo -e "\n!!!CAUTION!!!\n\nThis option will DESTROY the following files if present: \n\n$HOME/.und_mainchain\n$HOME/temp\n$HOME/UNDBackup\n/usr/local/bin/und\n/usr/local/bin/cosmovisor\n/etc/systemd/system/und.service\n"
+	read -p "Do you wish to continue?[y/n]> " CONTINUE
+	if [ "$CONTINUE" = "y" ];
+	then
+		remove_und
+		echo -e "\nAll Unification files removed\n"
+        exit
+    fi
+    if [ "$CONTINUE" = "n" ];
+    then
+	echo -e "\nExiting\n"
+		exit
+    fi        
+    done
 fi
 done 
 
@@ -55,12 +55,12 @@ do
 read -p "Do you wish to continue?[y/n]> " CONTINUE
 if [ "$CONTINUE" = "n" ];
 then
-    echo -e "\nExiting\n"
-    exit
+	echo -e "\nExiting\n"
+	exit
 fi
 if [ "$CONTINUE" = "y" ];
 then
-    break
+	break
 fi
 done
 
@@ -69,17 +69,17 @@ do
 read -p "Would you like to set up for Testnet, or Mainnet?[t/m]> " TEST_MAIN
 if [ "$TEST_MAIN" = "t" ];
 then
-     GENESIS=https://raw.githubusercontent.com/unification-com/testnet/master/latest/genesis.json
-     UND=https://github.com/unification-com/mainchain/releases/download/v1.6.3/und_v1.6.3_linux_x86_64.tar.gz
-     COSMOVISOR=https://github.com/cosmos/cosmos-sdk/releases/download/cosmovisor%2Fv1.2.0/cosmovisor-v1.2.0-linux-amd64.tar.gz
-     SEEDS=e428c5653865da4a55f5599d7ff3203789abadfd@seed-testnet.unification.io:26656
-     RPC=sync1-testnet.unification.io:26657,sync2-testnet.unification.io:26657
-     HANDH=$(curl -s https://rest-testnet.unification.io/blocks/latest | jq '.|[.block_id.hash,.block.header.height]')
-     break
+    GENESIS=https://raw.githubusercontent.com/unification-com/testnet/master/latest/genesis.json
+    UND=https://github.com/unification-com/mainchain/releases/download/v1.6.3/und_v1.6.3_linux_x86_64.tar.gz
+    COSMOVISOR=https://github.com/cosmos/cosmos-sdk/releases/download/cosmovisor%2Fv1.2.0/cosmovisor-v1.2.0-linux-amd64.tar.gz
+    SEEDS=e428c5653865da4a55f5599d7ff3203789abadfd@seed-testnet.unification.io:26656
+    RPC=sync1-testnet.unification.io:26657,sync2-testnet.unification.io:26657
+    HANDH=$(curl -s https://rest-testnet.unification.io/blocks/latest | jq '.|[.block_id.hash,.block.header.height]')
+    break
 fi
 if [ "$TEST_MAIN" = "m" ];
 then
-    break
+	break
 fi
 done
 
