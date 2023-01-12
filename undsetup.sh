@@ -11,7 +11,7 @@ remove_und() {
 	sudo systemctl stop und
 	sudo systemctl disable und
 	sudo rm -r $HOME/.und_mainchain
-	sudo rm -r $HOME/temp
+	sudo rm -r $HOME/tempund
 	sudo rm -r $HOME/UNDBackup
 	sudo rm -r /usr/local/bin/und
 	sudo rm -r /usr/local/bin/cosmovisor
@@ -31,7 +31,7 @@ if [ "$CHOOSE" = "r" ];
 then
 	while true;
 	do
-	echo -e "\n!!!CAUTION!!!\n\nThis option will DESTROY the following files if present: \n\n$HOME/.und_mainchain\n$HOME/temp\n$HOME/UNDBackup\n/usr/local/bin/und\n/usr/local/bin/cosmovisor\n/etc/systemd/system/und.service\n"
+	echo -e "\n!!!CAUTION!!!\n\nThis option will DESTROY the following files if present: \n\n$HOME/.und_mainchain\n$HOME/tempund\n$HOME/UNDBackup\n/usr/local/bin/und\n/usr/local/bin/cosmovisor\n/etc/systemd/system/und.service\n"
 	read -p "Do you wish to continue?[y/n]> " CONTINUE
 	if [ "$CONTINUE" = "y" ];
 	then
@@ -48,7 +48,7 @@ then
 fi
 done 
 
-echo -e "\n!!!CAUTION!!!\n\nThis script will DESTROY the following files if present: \n\n$HOME/.und_mainchain\n$HOME/temp\n$HOME/UNDBackup\n/usr/local/bin/und\n/usr/local/bin/cosmovisor\n/etc/systemd/system/und.service\n"
+echo -e "\n!!!CAUTION!!!\n\nThis script will DESTROY the following files if present: \n\n$HOME/.und_mainchain\n$HOME/tempund\n$HOME/UNDBackup\n/usr/local/bin/und\n/usr/local/bin/cosmovisor\n/etc/systemd/system/und.service\n"
 
 while true;
 do
@@ -90,13 +90,13 @@ remove_und
 
 #Making new working directories
 mkdir $HOME/UNDBackup
-mkdir -p $HOME/temp/und
-mkdir $HOME/temp/cosmovisor
+mkdir -p $HOME/tempund/und
+mkdir $HOME/tempund/cosmovisor
 
 #Setting up UND
-wget $UND -P $HOME/temp/und
-tar -zxvf $HOME/temp/und/$(ls $HOME/temp/und) -C $HOME/temp/und
-sudo cp $HOME/temp/und/und /usr/local/bin
+wget $UND -P $HOME/tempund/und
+tar -zxvf $HOME/tempund/und/$(ls $HOME/tempund/und) -C $HOME/tempund/und
+sudo cp $HOME/tempund/und/und /usr/local/bin
 und init $MONIKER
 curl $GENESIS > $HOME/.und_mainchain/config/genesis.json
 cp $HOME/.und_mainchain/config/priv_validator_key.json $HOME/UNDBackup
@@ -121,12 +121,12 @@ EOF
 
 
 #Setting up Cosmovisor
-wget $COSMOVISOR -P $HOME/temp/cosmovisor
-tar -zxvf $HOME/temp/cosmovisor/$(ls $HOME/temp/cosmovisor) -C $HOME/temp/cosmovisor
+wget $COSMOVISOR -P $HOME/tempund/cosmovisor
+tar -zxvf $HOME/tempund/cosmovisor/$(ls $HOME/tempund/cosmovisor) -C $HOME/tempund/cosmovisor
 mkdir -p $HOME/.und_mainchain/cosmovisor/genesis/bin
 mkdir $HOME/.und_mainchain/cosmovisor/upgrades
-mv $HOME/temp/und/und $HOME/.und_mainchain/cosmovisor/genesis/bin
-sudo mv $HOME/temp/cosmovisor/cosmovisor /usr/local/bin
+mv $HOME/tempund/und/und $HOME/.und_mainchain/cosmovisor/genesis/bin
+sudo mv $HOME/tempund/cosmovisor/cosmovisor /usr/local/bin
 tee $HOME/.und_mainchain/cosmovisor/UND_COSMOVISOR_ENV > /dev/null <<EOF
 DAEMON_NAME=und
 DAEMON_HOME=$HOME/.und_mainchain
@@ -145,11 +145,12 @@ sed -i 's/discovery_time = "15s"/discovery_time = "30s"/' $HOME/.und_mainchain/c
 sed -i 's/chunk_request_timeout = "10s"/chunk_request_timeout = "60s"/' $HOME/.und_mainchain/config/config.toml
 sed -i 's/seeds = ""/seeds = "'$SEEDS'"/' $HOME/.und_mainchain/config/config.toml
 
+
+
 #Cleanup
-rm -r $HOME/temp
+rm -r $HOME/tempund
 
 #SELinux Fix
-
 
 
 #Startup
