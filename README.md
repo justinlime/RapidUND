@@ -41,7 +41,7 @@ https://youtu.be/nAh_VgSNyY0
 
 Simply run 
 ```
-sh /path/to/undsetup.sh
+sh /path/to/RapidUND/rapidund
 ```
 
 If the node is stuck "Dialing peer address" for more than 10 minutes, then run the script once again.
