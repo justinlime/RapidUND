@@ -1,5 +1,8 @@
 #!/bin/sh
 
+CHAIN=NONE
+MONIKER=NONE
+
 remove_und() {
     sudo systemctl daemon-reload
     sudo systemctl stop und
@@ -13,6 +16,11 @@ remove_und() {
 }
 
 install_und_cosmovisor() {
+    mkdir $HOME/UNDBackup
+    mkdir -p $HOME/tempund/und
+    mkdir $HOME/tempund/upgradeund
+    mkdir $HOME/tempund/cosmovisor
+
     #Setting up UND
     wget $UND -P $HOME/tempund/und
     tar -zxvf $HOME/tempund/und/$(ls $HOME/tempund/und) -C $HOME/tempund/und
@@ -81,40 +89,6 @@ start_und() {
     sudo journalctl -u und -f
 }
 
-current_versions() {
-    cat << EOF
-
-    Working with versions:
-
-    UND Version: 
-    $UND
-
-    COSMOVISOR Version: 
-    $COSMOVISOR
-    
-    UPGRADE Version: 
-    $UPGRADE
-
-EOF
-}
-
-caution() {
-    cat << EOF
-
-                !!!!!!CAUTION!!!!!!!
-
-    This will DESTROY the following files if present:
-
-    $HOME/.und_mainchain  
-    $HOME/tempund
-    $HOME/UNDBackup
-    /usr/local/bin/und
-    /usr/local/bin/cosmovisor
-    /etc/systemd/system/und.service
-
-EOF
-}
-
 set_mainnet() {
     GENESIS=https://raw.githubusercontent.com/unification-com/mainnet/master/latest/genesis.json
     UND=https://github.com/unification-com/mainchain/releases/download/v1.6.3/und_v1.6.3_linux_x86_64.tar.gz
@@ -123,6 +97,7 @@ set_mainnet() {
     SEEDS=0c2b65bc604a18a490f5f55bb7b4140cfb512ced@seed1.unification.io:26656,e66e0f89af19da09f676c85b262d591b8c2bb9d8@seed2.unification.io:26656
     RPC=sync1.unification.io:26657,sync2.unification.io:26657
     HANDH_URL=https://rest.unification.io/blocks/latest
+    CHAIN=mainnet
 }
 
 set_testnet() {
@@ -133,11 +108,220 @@ set_testnet() {
     SEEDS=e428c5653865da4a55f5599d7ff3203789abadfd@seed-testnet.unification.io:26656
     RPC=sync1-testnet.unification.io:26657,sync2-testnet.unification.io:26657
     HANDH_URL=https://rest-testnet.unification.io/blocks/latest
+    CHAIN=testnet
+}
+
+install_menu() {
+cat << EOF
+
+
+
+██╗███╗   ██╗███████╗████████╗ █████╗ ██╗     ██╗     
+██║████╗  ██║██╔════╝╚══██╔══╝██╔══██╗██║     ██║     
+██║██╔██╗ ██║███████╗   ██║   ███████║██║     ██║     
+██║██║╚██╗██║╚════██║   ██║   ██╔══██║██║     ██║     
+██║██║ ╚████║███████║   ██║   ██║  ██║███████╗███████╗
+╚═╝╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚══════╝╚══════╝
+
+!!!!!!CAUTION!!!!!!!
+
+This will DESTROY the following files if present:
+
+$HOME/.und_mainchain  
+$HOME/tempund
+$HOME/UNDBackup
+/usr/local/bin/und
+/usr/local/bin/cosmovisor
+/etc/systemd/system/und.service
+
+|-------------------------|
+| key |      action       |
+|-----+-------------------|
+| i   | Install           | 
+|     |                   |
+|-----+-------------------|
+| key |       menu        |
+|-----+-------------------|
+| 1   | Main Menu         | 
+|     |                   |
+|-------------------------|
+
+EOF
+    while true
+    do
+        read -p "key > " -n 1 key 
+        case $key in
+            i)
+                if [ $MONIKER = "NONE" ] 
+                then
+                    echo -e "\n\nMoniker not set, cannot install"
+                elif [ $CHAIN = "NONE"] 
+                then
+                    echo -e "\n\nChain not set, cannot install"
+                else
+                    remove_und
+                    install_und_cosmovisor
+                    statesync_config
+                    pruning_config
+                    rm -r $HOME/tempund
+                    start_und
+                fi
+                ;;
+            1)
+                clear
+                main 
+                ;;
+        esac
+    done
+}
+
+uninstall_menu() {
+cat << EOF
+
+
+
+██╗   ██╗███╗   ██╗██╗███╗   ██╗███████╗████████╗ █████╗ ██╗     ██╗     
+██║   ██║████╗  ██║██║████╗  ██║██╔════╝╚══██╔══╝██╔══██╗██║     ██║     
+██║   ██║██╔██╗ ██║██║██╔██╗ ██║███████╗   ██║   ███████║██║     ██║     
+██║   ██║██║╚██╗██║██║██║╚██╗██║╚════██║   ██║   ██╔══██║██║     ██║     
+╚██████╔╝██║ ╚████║██║██║ ╚████║███████║   ██║   ██║  ██║███████╗███████╗
+ ╚═════╝ ╚═╝  ╚═══╝╚═╝╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚══════╝╚══════╝
+
+!!!!!!CAUTION!!!!!!!
+
+This will DESTROY the following files if present:
+
+$HOME/.und_mainchain  
+$HOME/tempund
+$HOME/UNDBackup
+/usr/local/bin/und
+/usr/local/bin/cosmovisor
+/etc/systemd/system/und.service
+
+|-------------------------|
+| key |      action       |
+|-----+-------------------|
+| u   | Uninstall         | 
+|     |                   |
+|-----+-------------------|
+| key |       menu        |
+|-----+-------------------|
+| 1   | Main Menu         | 
+|     |                   |
+|-------------------------|
+
+EOF
+    while true
+    do
+        read -p "key > " -n 1 key 
+        case $key in
+            u)
+                echo -e "\n"
+                remove_und
+                echo -e "\n\nAll Unification Files Removed\n"
+                exit
+                ;;
+            1)
+                clear
+                main 
+                ;;
+        esac
+    done
+}
+
+
+
+chain_menu() {
+cat << EOF
+
+
+
+ ██████╗██╗  ██╗ █████╗ ██╗███╗   ██╗
+██╔════╝██║  ██║██╔══██╗██║████╗  ██║
+██║     ███████║███████║██║██╔██╗ ██║
+██║     ██╔══██║██╔══██║██║██║╚██╗██║
+╚██████╗██║  ██║██║  ██║██║██║ ╚████║
+ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝
+
+|-------------------------|
+| key |      action       |
+|-----+-------------------|
+| t   | Set Testnet       | 
+| m   | Set Mainnet       | 
+|     |                   |
+|-----+-------------------|
+| key |       menu        |
+|-----+-------------------|
+| 1   | Main Menu         | 
+|     |                   |
+|-------------------------|
+
+EOF
+    while true
+    do
+        read -p "key > " -n 1 key 
+        case $key in
+            t)
+                set_testnet
+                echo -e "Testnet has been set\n"
+                ;;
+            m)
+                set_mainnet
+                echo -e "Mainnet has been set\n"
+                ;;
+            1)
+                clear
+                main 
+                ;;
+        esac
+    done
+}
+
+moniker_menu() {
+cat << EOF
+
+
+
+███╗   ███╗ ██████╗ ███╗   ██╗██╗██╗  ██╗███████╗██████╗ 
+████╗ ████║██╔═══██╗████╗  ██║██║██║ ██╔╝██╔════╝██╔══██╗
+██╔████╔██║██║   ██║██╔██╗ ██║██║█████╔╝ █████╗  ██████╔╝
+██║╚██╔╝██║██║   ██║██║╚██╗██║██║██╔═██╗ ██╔══╝  ██╔══██╗
+██║ ╚═╝ ██║╚██████╔╝██║ ╚████║██║██║  ██╗███████╗██║  ██║
+╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
+
+|-------------------------|
+| key |      action       |
+|-----+-------------------|
+| m   | Set New Moniker   | 
+|     |                   |
+|-----+-------------------|
+| key |       menu        |
+|-----+-------------------|
+| 1   | Main Menu         | 
+|     |                   |
+|-------------------------|
+
+EOF
+    while true
+    do
+        read -p "key > " -n 1 key 
+        case $key in
+            m)
+                echo -e "\n"
+                read -p "Enter New Moniker > " MONIKER
+                echo -e "\n\nMoniker has been set to $MONIKER\n"
+                ;;
+            1)
+                clear
+                main 
+                ;;
+        esac
+    done
 }
 
 main() {
+    clear
     cat << EOF 
-
 
 
 
@@ -152,87 +336,53 @@ This script is made to rapidly deploy a Unification Node, for Testnet or Mainnet
 
 If there are any issues please report them on github.
 
+|-------------------------|
+| key |      action       |
+|-----+-------------------|
+| q   | quit              | 
+| u   | uninstall         | 
+| i   | install           | 
+|     |                   |
+|-----+-------------------|
+| key |       menu        |
+|-----+-------------------|
+| 1   | Main Menu         | 
+| 2   | Chain             | 
+| 3   | Moniker           | 
+|     |                   |
+|-------------------------|
 
 EOF
-    while true;
+    while true
     do
-        read -p "Install, or Remove the node?[i/r]> " CHOOSE
-        if [ "$CHOOSE" = "i" ];
-        then
-            break
-        fi
-        if [ "$CHOOSE" = "r" ];
-        then
-            while true;
-            do
-                caution
-                read -p "Do you wish to continue?[y/n]> " CONTINUE
-                if [ "$CONTINUE" = "y" ];
-                then
-                    remove_und
-                    echo -e "\nAll Unification files removed\n"
-                    exit
-                fi
-                if [ "$CONTINUE" = "n" ];
-                then
-                    echo -e "\nExiting\n"
-                    exit
-                fi        
-            done
-        fi
-    done 
-
-    caution
-    while true;
-    do
-        read -p "Do you wish to continue?[y/n]> " CONTINUE
-        if [ "$CONTINUE" = "n" ];
-        then
-            echo -e "\nExiting\n"
-            exit
-        fi
-        if [ "$CONTINUE" = "y" ];
-        then
-            break
-        fi
+        read -p "key > " -n 1 key 
+        case $key in
+            q)
+                exit
+                ;;
+            u)
+                clear
+                uninstall_menu
+                ;;
+            i)
+                clear
+                install_menu
+                ;;
+            1)
+                clear
+                main
+                ;;
+            2)
+                clear
+                chain_menu 
+                ;;
+            3)
+                clear
+                moniker_menu
+                ;;
+        esac
     done
 
-    while true;
-    do
-        read -p "Would you like to set up for Testnet, or Mainnet?[t/m]> " TEST_MAIN
-        if [ "$TEST_MAIN" = "t" ];
-        then
-            set_testnet
-            current_versions
-            break
-        fi
-        if [ "$TEST_MAIN" = "m" ];
-        then
-            set_mainnet
-            current_versions
-            break
-        fi
-    done
-
-    read -p "Input node moniker/name> " MONIKER
-    #Removing old directories and files
-    remove_und
-
-    #Making new working directories
-    mkdir $HOME/UNDBackup
-    mkdir -p $HOME/tempund/und
-    mkdir $HOME/tempund/upgradeund
-    mkdir $HOME/tempund/cosmovisor
-
-    install_und_cosmovisor
-    statesync_config
-    pruning_config
-
-    #Cleanup
-    rm -r $HOME/tempund
-
-    #TO DO: SELinux Fix
-    start_und
 }
 
 main
