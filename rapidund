@@ -67,6 +67,10 @@ statesync_config() {
     sed -i 's/seeds = ""/seeds = "'$SEEDS'"/' $HOME/.und_mainchain/config/config.toml
 }
 
+pruning_config() {
+    echo TODO
+}
+
 start_und() {
     sudo systemctl daemon-reload
     sudo systemctl enable und
@@ -130,6 +134,14 @@ set_testnet() {
 
 main() {
     cat << EOF 
+
+██████╗  █████╗ ██████╗ ██╗██████╗ ██╗   ██╗███╗   ██╗██████╗ 
+██╔══██╗██╔══██╗██╔══██╗██║██╔══██╗██║   ██║████╗  ██║██╔══██╗
+██████╔╝███████║██████╔╝██║██║  ██║██║   ██║██╔██╗ ██║██║  ██║
+██╔══██╗██╔══██║██╔═══╝ ██║██║  ██║██║   ██║██║╚██╗██║██║  ██║
+██║  ██║██║  ██║██║     ██║██████╔╝╚██████╔╝██║ ╚████║██████╔╝
+╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚═════╝  ╚═════╝ ╚═╝  ╚═══╝╚═════╝ 
+
 This script is made to rapidly deploy a Unification Node, for Testnet or Mainnet, intended for expirienced operators.
 
 If there are any issues please report them on github."
