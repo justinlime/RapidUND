@@ -135,6 +135,9 @@ set_testnet() {
 main() {
     cat << EOF 
 
+
+
+
 ██████╗  █████╗ ██████╗ ██╗██████╗ ██╗   ██╗███╗   ██╗██████╗ 
 ██╔══██╗██╔══██╗██╔══██╗██║██╔══██╗██║   ██║████╗  ██║██╔══██╗
 ██████╔╝███████║██████╔╝██║██║  ██║██║   ██║██╔██╗ ██║██║  ██║
@@ -144,7 +147,8 @@ main() {
 
 This script is made to rapidly deploy a Unification Node, for Testnet or Mainnet, intended for expirienced operators.
 
-If there are any issues please report them on github."
+If there are any issues please report them on github.
+
 
 EOF
     while true;
