@@ -68,7 +68,10 @@ statesync_config() {
 }
 
 pruning_config() {
-    echo TODO
+    sed -i 's/pruning = "default"/pruning = "custom"/' $HOME/.und_mainchain/config/app.toml
+    sed -i 's/pruning-keep-recent = "0"/pruning-keep-recent = "100"/' $HOME/.und_mainchain/config/app.toml
+    sed -i 's/pruning-keep-every = "0"/pruning-keep-every = "0"/' $HOME/.und_mainchain/config/app.toml
+    sed -i 's/pruning-interval = "0"/pruning-interval = "10"/' $HOME/.und_mainchain/config/app.toml
 }
 
 start_und() {
@@ -223,6 +226,7 @@ EOF
 
     install_und_cosmovisor
     statesync_config
+    pruning_config
 
     #Cleanup
     rm -r $HOME/tempund
