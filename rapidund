@@ -3,6 +3,12 @@
 CHAIN=NONE
 MONIKER=NONE
 
+PRUNING=default
+PRUNING_PRESET=default
+PRUNING_RECENT=100
+PRUNING_EVERY=500
+PRUNING_INTERVAL=10
+
 remove_und() {
     sudo systemctl daemon-reload
     sudo systemctl stop und
@@ -60,6 +66,7 @@ DAEMON_HOME=$HOME/.und_mainchain
 DAEMON_RESTART_AFTER_UPGRADE=true
 DAEMON_RESTART_DELAY=5s
 EOF
+    rm -r $HOME/tempund
 }
 
 statesync_config() {
@@ -75,7 +82,7 @@ statesync_config() {
     sed -i 's/seeds = ""/seeds = "'$SEEDS'"/' $HOME/.und_mainchain/config/config.toml
 }
 
-pruning_config() {
+set_pruning() {
     sed -i 's/pruning = "default"/pruning = "custom"/' $HOME/.und_mainchain/config/app.toml
     sed -i 's/pruning-keep-recent = "0"/pruning-keep-recent = "100"/' $HOME/.und_mainchain/config/app.toml
     sed -i 's/pruning-keep-every = "0"/pruning-keep-every = "0"/' $HOME/.und_mainchain/config/app.toml
@@ -97,7 +104,7 @@ set_mainnet() {
     SEEDS=0c2b65bc604a18a490f5f55bb7b4140cfb512ced@seed1.unification.io:26656,e66e0f89af19da09f676c85b262d591b8c2bb9d8@seed2.unification.io:26656
     RPC=sync1.unification.io:26657,sync2.unification.io:26657
     HANDH_URL=https://rest.unification.io/blocks/latest
-    CHAIN=mainnet
+    CHAIN=MainNet
 }
 
 set_testnet() {
@@ -108,7 +115,7 @@ set_testnet() {
     SEEDS=e428c5653865da4a55f5599d7ff3203789abadfd@seed-testnet.unification.io:26656
     RPC=sync1-testnet.unification.io:26657,sync2-testnet.unification.io:26657
     HANDH_URL=https://rest-testnet.unification.io/blocks/latest
-    CHAIN=testnet
+    CHAIN=TestNet
 }
 
 install_menu() {
@@ -134,6 +141,11 @@ $HOME/UNDBackup
 /usr/local/bin/cosmovisor
 /etc/systemd/system/und.service
 
+Current configuration:
+Moniker: $MONIKER
+Chain: $CHAIN
+Pruning: $PRUNING_PRESET
+
 |-------------------------|
 | key |      action       |
 |-----+-------------------|
@@ -155,15 +167,14 @@ EOF
                 if [ $MONIKER = "NONE" ] 
                 then
                     echo -e "\n\nMoniker not set, cannot install"
-                elif [ $CHAIN = "NONE"] 
+                elif [ $CHAIN = "NONE" ] 
                 then
                     echo -e "\n\nChain not set, cannot install"
                 else
                     remove_und
                     install_und_cosmovisor
                     statesync_config
-                    pruning_config
-                    rm -r $HOME/tempund
+                    set_pruning 
                     start_und
                 fi
                 ;;
@@ -243,6 +254,10 @@ cat << EOF
 ╚██████╗██║  ██║██║  ██║██║██║ ╚████║
  ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝
 
+ Select the chain this node should operate on
+
+Current Chain: $CHAIN
+
 |-------------------------|
 | key |      action       |
 |-----+-------------------|
@@ -262,12 +277,16 @@ EOF
         read -p "key > " -n 1 key 
         case $key in
             t)
+                echo -e "\n"
                 set_testnet
-                echo -e "Testnet has been set\n"
+                clear
+                chain_menu
                 ;;
             m)
+                echo -e "\n"
                 set_mainnet
-                echo -e "Mainnet has been set\n"
+                clear
+                chain_menu
                 ;;
             1)
                 clear
@@ -289,6 +308,10 @@ cat << EOF
 ██║ ╚═╝ ██║╚██████╔╝██║ ╚████║██║██║  ██╗███████╗██║  ██║
 ╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
 
+Set the moniker for this node
+
+Current Moniker: $MONIKER
+
 |-------------------------|
 | key |      action       |
 |-----+-------------------|
@@ -309,7 +332,154 @@ EOF
             m)
                 echo -e "\n"
                 read -p "Enter New Moniker > " MONIKER
-                echo -e "\n\nMoniker has been set to $MONIKER\n"
+                clear
+                moniker_menu
+                ;;
+            1)
+                clear
+                main 
+                ;;
+        esac
+    done
+}
+
+pruning_menu() {
+cat << EOF
+
+
+
+██████╗ ██████╗ ██╗   ██╗███╗   ██╗██╗███╗   ██╗ ██████╗ 
+██╔══██╗██╔══██╗██║   ██║████╗  ██║██║████╗  ██║██╔════╝ 
+██████╔╝██████╔╝██║   ██║██╔██╗ ██║██║██╔██╗ ██║██║  ███╗
+██╔═══╝ ██╔══██╗██║   ██║██║╚██╗██║██║██║╚██╗██║██║   ██║
+██║     ██║  ██║╚██████╔╝██║ ╚████║██║██║ ╚████║╚██████╔╝
+╚═╝     ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝╚═╝  ╚═══╝ ╚═════╝ 
+
+Set custom pruning options for your node, or select a preset
+
+Current pruning config: 
+
+Preset: $PRUNING_PRESET
+Keep-Recent: $PRUNING_RECENT
+Keep-Every: $PRUNING_EVERY
+Pruning-Interval: $PRUNING_INTERVAL
+
+|-------------------------|
+| key |      action       |
+|-----+-------------------|
+| c   | custom pruning    | 
+|     |                   |
+|-----+-------------------|
+| key |     presets       |
+|-----+-------------------|
+| d   | default           |
+| l   | low storage       |
+| n   | nothing           |
+| e   | everything        |
+|     |                   |
+|-----+-------------------|
+| key |       menu        |
+|-----+-------------------|
+| 1   | Main Menu         | 
+|     |                   |
+|-------------------------|
+
+EOF
+    while true
+    do
+        read -p "key > " -n 1 key 
+        case $key in
+            c)
+                PRUNING_PRESET=custom
+                PRUNING=custom
+                clear
+                pruning_menu
+                ;;
+            d)
+                PRUNING_PRESET=default
+                PRUNING=default
+                PRUNING_RECENT=100
+                PRUNING_EVERY=500
+                PRUNING_INTERVAL=10
+                clear
+                pruning_menu
+
+                ;;
+            l)
+                PRUNING_PRESET="low storage"
+                PRUNING=custom
+                PRUNING_RECENT=100
+                PRUNING_EVERY=0
+                PRUNING_INTERVAL=10
+                clear
+                pruning_menu
+
+                ;;
+            n)
+                PRUNING_PRESET=nothing
+                PRUNING=nothing
+                PRUNING_RECENT=100
+                PRUNING_EVERY=500
+                PRUNING_INTERVAL=10
+                clear
+                pruning_menu
+
+                ;;
+            e) 
+                PRUNING_PRESET=everything
+                PRUNING=everything
+                PRUNING_RECENT=100
+                PRUNING_EVERY=500
+                PRUNING_INTERVAL=10
+                clear
+                pruning_menu
+                ;;
+            1)
+                clear
+                main 
+                ;;
+        esac
+    done
+}
+
+misc_menu() {
+cat << EOF
+
+
+
+███╗   ███╗██╗███████╗ ██████╗
+████╗ ████║██║██╔════╝██╔════╝
+██╔████╔██║██║███████╗██║     
+██║╚██╔╝██║██║╚════██║██║     
+██║ ╚═╝ ██║██║███████║╚██████╗
+╚═╝     ╚═╝╚═╝╚══════╝ ╚═════╝
+
+Set the moniker for this node
+
+Current Moniker: $MONIKER
+
+|-------------------------|
+| key |      action       |
+|-----+-------------------|
+| i   | toggle tx indexing| 
+|     |                   |
+|-----+-------------------|
+| key |       menu        |
+|-----+-------------------|
+| 1   | Main Menu         | 
+|     |                   |
+|-------------------------|
+
+EOF
+    while true
+    do
+        read -p "key > " -n 1 key 
+        case $key in
+            m)
+                echo -e "\n"
+                read -p "Enter New Moniker > " MONIKER
+                clear
+                moniker_menu
                 ;;
             1)
                 clear
@@ -349,6 +519,7 @@ If there are any issues please report them on github.
 | 1   | Main Menu         | 
 | 2   | Chain             | 
 | 3   | Moniker           | 
+| 4   | Pruning           | 
 |     |                   |
 |-------------------------|
 
@@ -380,9 +551,12 @@ EOF
                 clear
                 moniker_menu
                 ;;
+            4)
+                clear
+                pruning_menu
+                ;;
         esac
     done
-
 }
 
 main
