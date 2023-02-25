@@ -392,6 +392,15 @@ EOF
             c)
                 PRUNING_PRESET=custom
                 PRUNING=custom
+                echo -e "\n"
+                read -p "Enter pruning-keep-recent: > " CHOICE 
+                PRUNING_RECENT=$CHOICE
+                echo -e "\n"
+                read -p "Enter pruning-keep-every: > " CHOICE 
+                PRUNING_EVERY=$CHOICE
+                echo -e "\n"
+                read -p "Enter pruning-interval: > " CHOICE 
+                PRUNING_INTERVAL=$CHOICE
                 clear
                 pruning_menu
                 ;;
