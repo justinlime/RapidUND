@@ -83,10 +83,10 @@ statesync_config() {
 }
 
 set_pruning() {
-    sed -i 's/pruning = "default"/pruning = "custom"/' $HOME/.und_mainchain/config/app.toml
-    sed -i 's/pruning-keep-recent = "0"/pruning-keep-recent = "100"/' $HOME/.und_mainchain/config/app.toml
-    sed -i 's/pruning-keep-every = "0"/pruning-keep-every = "0"/' $HOME/.und_mainchain/config/app.toml
-    sed -i 's/pruning-interval = "0"/pruning-interval = "10"/' $HOME/.und_mainchain/config/app.toml
+    sed -i 's/pruning = "default"/pruning = "'$PRUNING'"/' $HOME/.und_mainchain/config/app.toml
+    sed -i 's/pruning-keep-recent = "0"/pruning-keep-recent = "'$PRUNING_RECENT'"/' $HOME/.und_mainchain/config/app.toml
+    sed -i 's/pruning-keep-every = "0"/pruning-keep-every = "'$PRUNING_EVERY'"/' $HOME/.und_mainchain/config/app.toml
+    sed -i 's/pruning-interval = "0"/pruning-interval = "'$PRUNING_INTERVAL'"/' $HOME/.und_mainchain/config/app.toml
 }
 
 start_und() {
@@ -141,11 +141,6 @@ $HOME/UNDBackup
 /usr/local/bin/cosmovisor
 /etc/systemd/system/und.service
 
-Current configuration:
-Moniker: $MONIKER
-Chain: $CHAIN
-Pruning: $PRUNING_PRESET
-
 |-------------------------|
 | key |      action       |
 |-----+-------------------|
@@ -158,6 +153,11 @@ Pruning: $PRUNING_PRESET
 |     |                   |
 |-------------------------|
 
+Current configuration:
+Moniker: $MONIKER
+Chain: $CHAIN
+Pruning: $PRUNING_PRESET
+
 EOF
     while true
     do
@@ -166,11 +166,12 @@ EOF
             i)
                 if [ $MONIKER = "NONE" ] 
                 then
-                    echo -e "\n\nMoniker not set, cannot install"
+                    echo -e "\n\nMoniker not set, cannot install\n"
                 elif [ $CHAIN = "NONE" ] 
                 then
-                    echo -e "\n\nChain not set, cannot install"
+                    echo -e "\n\nChain not set, cannot install\n"
                 else
+                    echo -e "\n"
                     remove_und
                     install_und_cosmovisor
                     statesync_config
@@ -256,8 +257,6 @@ cat << EOF
 
 Select the chain this node should operate on
 
-Current Chain: $CHAIN
-
 |-------------------------|
 | key |      action       |
 |-----+-------------------|
@@ -270,6 +269,8 @@ Current Chain: $CHAIN
 | 1   | Main Menu         | 
 |     |                   |
 |-------------------------|
+
+Current Chain: $CHAIN
 
 EOF
     while true
@@ -310,8 +311,6 @@ cat << EOF
 
 Set the moniker for this node
 
-Current Moniker: $MONIKER
-
 |-------------------------|
 | key |      action       |
 |-----+-------------------|
@@ -323,6 +322,8 @@ Current Moniker: $MONIKER
 | 1   | Main Menu         | 
 |     |                   |
 |-------------------------|
+
+Current Moniker: $MONIKER
 
 EOF
     while true
@@ -357,25 +358,18 @@ cat << EOF
 
 Set custom pruning options for your node, or select a preset
 
-Current pruning config: 
-
-Preset: $PRUNING_PRESET
-Keep-Recent: $PRUNING_RECENT
-Keep-Every: $PRUNING_EVERY
-Pruning-Interval: $PRUNING_INTERVAL
-
 |-------------------------|
 | key |      action       |
 |-----+-------------------|
-| c   | custom pruning    | 
+| c   | Custom Pruning    | 
 |     |                   |
 |-----+-------------------|
 | key |     presets       |
 |-----+-------------------|
-| d   | default           |
-| l   | low storage       |
-| n   | nothing           |
-| e   | everything        |
+| d   | Default           |
+| l   | Low Storage       |
+| n   | Nothing           |
+| e   | Everything        |
 |     |                   |
 |-----+-------------------|
 | key |       menu        |
@@ -383,6 +377,13 @@ Pruning-Interval: $PRUNING_INTERVAL
 | 1   | Main Menu         | 
 |     |                   |
 |-------------------------|
+
+Current pruning config: 
+
+Preset: $PRUNING_PRESET
+Keep-Recent: $PRUNING_RECENT
+Keep-Every: $PRUNING_EVERY
+Pruning-Interval: $PRUNING_INTERVAL
 
 EOF
     while true
@@ -412,7 +413,6 @@ EOF
                 PRUNING_INTERVAL=10
                 clear
                 pruning_menu
-
                 ;;
             l)
                 PRUNING_PRESET="low storage"
@@ -422,7 +422,6 @@ EOF
                 PRUNING_INTERVAL=10
                 clear
                 pruning_menu
-
                 ;;
             n)
                 PRUNING_PRESET=nothing
@@ -432,7 +431,6 @@ EOF
                 PRUNING_INTERVAL=10
                 clear
                 pruning_menu
-
                 ;;
             e) 
                 PRUNING_PRESET=everything
@@ -472,9 +470,9 @@ If there are any issues please report them on github.
 |-------------------------|
 | key |      action       |
 |-----+-------------------|
-| q   | quit              | 
-| u   | uninstall         | 
-| i   | install           | 
+| q   | Quit              | 
+| u   | Uninstall         | 
+| i   | Install           | 
 |     |                   |
 |-----+-------------------|
 | key |       menu        |
