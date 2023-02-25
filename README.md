@@ -17,7 +17,7 @@ https://youtu.be/nAh_VgSNyY0
 
 ## *USAGE:*
 
-Simply run 
+To install and run, just use: 
 ```
 sh <(curl https://raw.githubusercontent.com/refundvalidator/RapidUND/main/rapidund)
 ```
