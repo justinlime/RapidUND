@@ -451,53 +451,6 @@ EOF
     done
 }
 
-misc_menu() {
-cat << EOF
-
-
-
-███╗   ███╗██╗███████╗ ██████╗
-████╗ ████║██║██╔════╝██╔════╝
-██╔████╔██║██║███████╗██║     
-██║╚██╔╝██║██║╚════██║██║     
-██║ ╚═╝ ██║██║███████║╚██████╗
-╚═╝     ╚═╝╚═╝╚══════╝ ╚═════╝
-
-Set the moniker for this node
-
-Current Moniker: $MONIKER
-
-|-------------------------|
-| key |      action       |
-|-----+-------------------|
-| i   | toggle tx indexing| 
-|     |                   |
-|-----+-------------------|
-| key |       menu        |
-|-----+-------------------|
-| 1   | Main Menu         | 
-|     |                   |
-|-------------------------|
-
-EOF
-    while true
-    do
-        read -p "key > " -n 1 key 
-        case $key in
-            m)
-                echo -e "\n"
-                read -p "Enter New Moniker > " MONIKER
-                clear
-                moniker_menu
-                ;;
-            1)
-                clear
-                main 
-                ;;
-        esac
-    done
-}
-
 main() {
     clear
     cat << EOF 
