@@ -254,7 +254,7 @@ cat << EOF
 ╚██████╗██║  ██║██║  ██║██║██║ ╚████║
  ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝
 
- Select the chain this node should operate on
+Select the chain this node should operate on
 
 Current Chain: $CHAIN
 
@@ -502,7 +502,8 @@ main() {
 ██║  ██║██║  ██║██║     ██║██████╔╝╚██████╔╝██║ ╚████║██████╔╝
 ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚═════╝  ╚═════╝ ╚═╝  ╚═══╝╚═════╝ 
 
-This script is made to rapidly deploy a Unification Node, for Testnet or Mainnet, intended for expirienced operators.
+This script is made to rapidly deploy a Unification Node, for Testnet or Mainnet. 
+Intended for expirienced operators.
 
 If there are any issues please report them on github.
 
