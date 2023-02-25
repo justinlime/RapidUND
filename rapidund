@@ -229,7 +229,7 @@ EOF
         case $key in
             u)
                 echo -e "\n"
-                remove_und
+                remove_und 
                 echo -e "\n\nAll Unification Files Removed\n"
                 exit
                 ;;
