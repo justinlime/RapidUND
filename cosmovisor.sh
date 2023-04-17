@@ -27,7 +27,7 @@ mv und $HOME/.und_mainchain/cosmovisor/upgrades/2-grog/bin
 rm -rf $HOME/tmp
 
 rm -rf $HOME/.und_mainchain/cosmovisor/current
-ln -s $HOME/.und_mainchain/cosmovisor/upgrades/1-init_ibc/bin $HOME/.und_mainchain/cosmovisor/current
+ln -s $HOME/.und_mainchain/cosmovisor/upgrades/1-init_ibc $HOME/.und_mainchain/cosmovisor/current
 
 echo "Genesis:"
 $HOME/.und_mainchain/cosmovisor/genesis/bin/und version --log_level=""
