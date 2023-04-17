@@ -34,7 +34,7 @@ echo "Genesis:"
 $HOME/.und_mainchain/cosmovisor/genesis/bin/und version --log_level=""
 
 echo "Current:"
-$HOME/.und_mainchain/current/und version --log_level=""
+$HOME/.und_mainchain/current/bin/und version --log_level=""
 
 echo "Upgrade:"
 $HOME/.und_mainchain/cosmovisor/upgrades/2-grog/bin/und version --log_level=""
