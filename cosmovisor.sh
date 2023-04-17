@@ -1,6 +1,7 @@
 #!/bin/sh
 
 sudo systemctl stop und
+cp -r $HOME/.und_mainchain/cosmovisor $HOME/.und_mainchain/cosmovisor.old
 
 #Genesis
 mkdir -p $HOME/tmp && cd $HOME/tmp
