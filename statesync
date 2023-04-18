@@ -1,10 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 sudo systemctl stop und
 
-mv $HOME/.und_mainchain/data/priv_validator_state.json $HOME/.und_mainchain/priv_validator_state
+mv $HOME/.und_mainchain/data/priv_validator_state.json $HOME/.und_mainchain/priv_validator_state.json
 rm -rf $HOME/.und_mainchain/data
 mkdir $HOME/.und_mainchain/data
-mv $HOME/.und_mainchain/priv_validator_state.json $HOME/.und_mainchain/data/priv_validator_state
+mv $HOME/.und_mainchain/priv_validator_state.json $HOME/.und_mainchain/data/priv_validator_state.json
 
 HANDH_URL=https://rest.unification.io/blocks/latest
 HANDH=$(curl -s $HANDH_URL | jq '.|[.block_id.hash,.block.header.height]')
