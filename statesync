@@ -1,0 +1,17 @@
+#!/bin/sh
+sudo systemctl stop und
+
+mv $HOME/.und_mainchain/data/priv_validator_state.json $HOME/.und_mainchain/priv_validator_state
+rm -rf $HOME/.und_mainchain/data
+mkdir $HOME/.und_mainchain/data
+mv $HOME/.und_mainchain/priv_validator_state.json $HOME/.und_mainchain/data/priv_validator_state
+
+HANDH_URL=https://rest.unification.io/blocks/latest
+HANDH=$(curl -s $HANDH_URL | jq '.|[.block_id.hash,.block.header.height]')
+HASH="${HANDH:4:66}"
+HEIGHT="${HANDH:75:7}"
+sed -i "s/trust_height = 0/trust_height = $HEIGHT/" $HOME/.und_mainchain/config/config.toml
+sed -i 's/trust_hash = ""/trust_hash = '"$HASH"'/' $HOME/.und_mainchain/config/config.toml
+
+sudo systemctl restart und
+sudo journalctl -u und -f -o cat
