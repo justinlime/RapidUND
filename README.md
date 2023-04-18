@@ -19,7 +19,7 @@ https://youtu.be/nAh_VgSNyY0
 
 To install and run, just use: 
 ```
-sh <(curl https://raw.githubusercontent.com/refundvalidator/RapidUND/main/rapidund)
+bash <(curl https://raw.githubusercontent.com/refundvalidator/RapidUND/main/rapidund)
 ```
 
 If the node is stuck "Dialing peer address" for more than 10 minutes, then run the script once again.
