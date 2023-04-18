@@ -2,6 +2,7 @@
 sudo systemctl stop und
 
 rm -rf $HOME/.und_mainchain/data/*
+rm -rf $HOME/.und_mainchain/addrbook.json
 tee $HOME/.und_mainchain/data/priv_validator_state.json > /dev/null <<EOF
 {
   "height": "0",
