@@ -1,0 +1,30 @@
+#!/bin/bash
+sudo systemctl stop und
+
+rm -rf $HOME/.und_mainchain/data/*
+rm -rf $HOME/.und_mainchain/config/addrbook.json
+tee $HOME/.und_mainchain/data/priv_validator_state.json > /dev/null <<EOF
+{
+  "height": "0",
+  "round": 0,
+  "step": 0
+}
+EOF
+
+SNAP_RPC="sync1.unification.io:26657"
+LATEST_HEIGHT=$(curl -s $SNAP_RPC/block | jq -r .result.block.header.height); \
+BLOCK_HEIGHT=$((LATEST_HEIGHT - 2000)); \
+TRUST_HASH=$(curl -s "$SNAP_RPC/block?height=$BLOCK_HEIGHT" | jq -r .result.block_id.hash)
+sed -i.bak -E "s|^(enable[[:space:]]+=[[:space:]]+).*$|\1true| ; \
+s|^(trust_height[[:space:]]+=[[:space:]]+).*$|\1$BLOCK_HEIGHT| ; \
+s|^(trust_hash[[:space:]]+=[[:space:]]+).*$|\1\"$TRUST_HASH\"|" $HOME/.und_mainchain/config/config.toml
+
+#HANDH_URL=https://rest.unification.io/blocks/latest
+#HANDH=$(curl -s $HANDH_URL | jq '.|[.block_id.hash,.block.header.height]')
+#HASH="${HANDH:4:66}"
+#HEIGHT="${HANDH:75:7}"
+#sed -i "s/trust_height.*/trust_height = $HEIGHT/" $HOME/.und_mainchain/config/config.toml
+#sed -i 's/trust_hash.*/trust_hash = '"$HASH"'/' $HOME/.und_mainchain/config/config.toml
+
+sudo systemctl restart und
+sudo journalctl -u und -f -o cat
