@@ -1,0 +1,70 @@
+#!/bin/bash
+
+#Reverts changes and exits if commands fail
+revert_and_exit () {
+    if [ $? -ne 0 ] 
+    then
+        clear
+        echo "Script failed while setting genesis, reverting and exiting..."
+        rm -rf $HOME/.und_mainchain/cosmovisor
+        mv $HOME/.und_mainchain/cosmovisor.old $HOME/.und_mainchain/cosmovisor
+        sudo systemctl restart und
+        sleep 10
+        sudo journalctl -u und -f -o cat
+    fi
+}
+
+#Backup cosmovisor dir
+sudo systemctl stop und
+cp -r $HOME/.und_mainchain/cosmovisor $HOME/.und_mainchain/cosmovisor.old
+
+#Genesis
+mkdir -p $HOME/tmp && cd $HOME/tmp && \
+wget https://github.com/unification-com/mainchain/releases/download/1.5.1/und_v1.5.1_linux_x86_64.tar.gz && \
+tar -zxvf und_v1.5.1_linux_x86_64.tar.gz && \
+mkdir -p $HOME/.und_mainchain/cosmovisor/genesis/bin && \
+mv und $HOME/.und_mainchain/cosmovisor/genesis/bin  && \
+rm -rf $HOME/tmp 
+revert_and_exit
+
+#Current
+mkdir -p $HOME/tmp && cd $HOME/tmp && \
+wget https://github.com/unification-com/mainchain/releases/download/v1.7.0/und_v1.7.0_linux_x86_64.tar.gz && \
+tar -zxvf und_v1.7.0_linux_x86_64.tar.gz && \
+mkdir -p $HOME/.und_mainchain/cosmovisor/upgrades/2-grog/bin && \
+mv und $HOME/.und_mainchain/cosmovisor/upgrades/2-grog/bin && \
+rm -rf $HOME/tmp 
+revert_and_exit
+
+#Upgrade
+mkdir -p $HOME/tmp && cd $HOME/tmp && \
+wget https://github.com/unification-com/mainchain/releases/download/v1.8.2/und_v1.8.2_linux_x86_64.tar.gz && \
+tar -zxvf und_v1.8.2_linux_x86_64.tar.gz && \
+mkdir -p $HOME/.und_mainchain/cosmovisor/upgrades/3-keyleth/bin && \
+mv und $HOME/.und_mainchain/cosmovisor/upgrades/3-keyleth/bin && \
+rm -rf $HOME/tmp
+revert_and_exit
+
+#Reset current, just to be sure
+rm -rf $HOME/.und_mainchain/cosmovisor/current && \
+ln -s $HOME/.und_mainchain/cosmovisor/upgrades/2-grog $HOME/.und_mainchain/cosmovisor/current && \
+clear
+revert_and_exit
+
+echo "Genesis:"
+$HOME/.und_mainchain/cosmovisor/genesis/bin/und version --log_level=""
+
+echo "Current:"
+$HOME/.und_mainchain/cosmovisor/current/bin/und version --log_level=""
+
+echo "Upgrade:"
+$HOME/.und_mainchain/cosmovisor/upgrades/3-keyleth/bin/und version --log_level=""
+
+sudo systemctl restart und
+sleep 10
+sudo journalctl -u und -f -o cat
+
+
+
+
+
