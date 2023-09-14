@@ -520,4 +520,20 @@ EOF
     done
 }
 
-main
+if [ "$EUID" = 0 ] 
+    then
+        clear
+        cat << EOF
+
+*** You are attempting to run this script as root user ***
+
+This is poor practice,
+please try again as a created user with sudo privledges
+
+EOF
+        exit
+    else
+        main
+    fi
+
+}
