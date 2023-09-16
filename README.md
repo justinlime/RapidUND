@@ -13,6 +13,8 @@ https://youtu.be/nAh_VgSNyY0
 -wget
 
 -curl
+
+-xxd
 ```
 
 ## *USAGE:*

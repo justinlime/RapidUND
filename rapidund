@@ -70,12 +70,12 @@ EOF
 }
 
 statesync_config() {
-    HANDH=$(curl -s $HANDH_URL | jq '.|[.block_id.hash,.block.header.height]')
-    HASH="${HANDH:4:66}"
-    HEIGHT="${HANDH:75:7}"
+    HANDH=$(curl -s $HANDH_URL)
+    HEIGHT=$(echo $HANDH | jq -r '.block.header.height')
+    HASH=$(echo $HANDH | jq -r '.block_id.hash' | base64 -d | xxd -p -u -c 50)
     sed -i "s/enable = false/enable = true/" $HOME/.und_mainchain/config/config.toml
     sed -i "s/trust_height = 0/trust_height = $HEIGHT/" $HOME/.und_mainchain/config/config.toml
-    sed -i 's/trust_hash = ""/trust_hash = '"$HASH"'/' $HOME/.und_mainchain/config/config.toml
+    sed -i 's/trust_hash = ""/trust_hash = "'$HASH'"/' $HOME/.und_mainchain/config/config.toml
     sed -i 's/rpc_servers = ""/rpc_servers = "'$RPC'"/' $HOME/.und_mainchain/config/config.toml
     sed -i 's/discovery_time = "15s"/discovery_time = "30s"/' $HOME/.und_mainchain/config/config.toml
     sed -i 's/chunk_request_timeout = "10s"/chunk_request_timeout = "60s"/' $HOME/.und_mainchain/config/config.toml
@@ -93,28 +93,28 @@ start_und() {
     sudo systemctl daemon-reload
     sudo systemctl enable und
     sudo systemctl start und
-    sudo journalctl -u und -f
+    sudo journalctl -u und -f -o cat
 }
 
 set_mainnet() {
     GENESIS=https://raw.githubusercontent.com/unification-com/mainnet/master/latest/genesis.json
-    UND=https://github.com/unification-com/mainchain/releases/download/v1.7.0/und_v1.7.0_linux_x86_64.tar.gz
+    UND=https://github.com/unification-com/mainchain/releases/download/v1.8.2/und_v1.8.2_linux_x86_64.tar.gz
     COSMOVISOR=https://github.com/cosmos/cosmos-sdk/releases/download/cosmovisor%2Fv1.2.0/cosmovisor-v1.2.0-linux-amd64.tar.gz
     UPGRADE=NONE
     SEEDS=0c2b65bc604a18a490f5f55bb7b4140cfb512ced@seed1.unification.io:26656,e66e0f89af19da09f676c85b262d591b8c2bb9d8@seed2.unification.io:26656
     RPC=sync1.unification.io:26657,sync2.unification.io:26657
-    HANDH_URL=https://rest.unification.io/blocks/latest
+    HANDH_URL=https://rest.unification.io/cosmos/base/tendermint/v1beta1/blocks/latest
     CHAIN=MainNet
 }
 
 set_testnet() {
     GENESIS=https://raw.githubusercontent.com/unification-com/testnet/master/latest/genesis.json
-    UND=https://github.com/unification-com/mainchain/releases/download/v1.7.0/und_v1.7.0_linux_x86_64.tar.gz
+    UND=https://github.com/unification-com/mainchain/releases/download/v1.8.2/und_v1.8.2_linux_x86_64.tar.gz
     UPGRADE=NONE
     COSMOVISOR=https://github.com/cosmos/cosmos-sdk/releases/download/cosmovisor%2Fv1.2.0/cosmovisor-v1.2.0-linux-amd64.tar.gz
     SEEDS=e428c5653865da4a55f5599d7ff3203789abadfd@seed-testnet.unification.io:26656
     RPC=sync1-testnet.unification.io:26657,sync2-testnet.unification.io:26657
-    HANDH_URL=https://rest-testnet.unification.io/blocks/latest
+    HANDH_URL=https://rest-testnet.unification.io/cosmos/base/tendermint/v1beta1/blocks/latest
     CHAIN=TestNet
 }
 
@@ -520,11 +520,11 @@ EOF
     done
 }
 
-if [ "$EUID" = 0 ] 
-    then
+startup_check() {
+    # Ensure root user is not running the script
+    if [ "$EUID" = 0 ]; then
         clear
         cat << EOF
-
 *** You are attempting to run this script as root user ***
 
 This is poor practice,
@@ -532,8 +532,26 @@ please try again as a created user with sudo privledges
 
 EOF
         exit
-    else
-        main
     fi
 
+    # Ensure needed programs are installed
+    if ! command -v jq &> /dev/null; then
+        clear
+        echo "jq is not installed, please refer to README for dependency list"
+        exit
+    elif ! command -v curl &> /dev/null; then
+        clear
+        echo "curl is not installed, please refer to README for dependency list"
+        exit
+    elif ! command -v wget &> /dev/null; then
+        clear
+        echo "wget is not installed, please refer to README for dependency list"
+        exit
+    elif ! command -v xxd &> /dev/null; then
+        clear
+        echo "xxd is not installed, please refer to README for dependency list"
+        exit
+    fi
 }
+startup_check
+main
