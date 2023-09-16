@@ -1,44 +1,48 @@
 # RapidUND
-#### Bash script to rapidly deploy an Unification Node with StateSync/Cosmovisor as Daemon
+A set of tools/script for rapid unification node management
+![Imgur](https://imgur.com/bxtWRxx.png)
+#### **Dependencies**
+- jq
 
-Script has been tested with CentOS and Debian, but should work with similar distributions without issue.
+- wget
 
-A video demonstration can be found here:
-https://youtu.be/nAh_VgSNyY0
+- curl
 
-## *PREREQUISITES:*
-```
--jq
+- xxd
 
--wget
-
--curl
-
--xxd
-```
-
-## *USAGE:*
-
-To install and run, just use: 
+## rapidund
+Rapidly deploy a Unification node
+#### Usage:
 ```
 bash <(curl https://raw.githubusercontent.com/refundvalidator/RapidUND/main/rapidund)
 ```
-
-If the node is stuck "Dialing peer address" for more than 10 minutes, then run the script once again.
-
+#### Notes:
+Script should not be run as a root user. Script expects to be run as a created user with the `$HOME` env set, and `sudo` privledges 
 If you have `SELinux` active installed it may block the `und.service` file for the daemon.
+Script will copy the newly created `node_key.json` and `priv_validator_key.json` into `$HOME/UNDBackup` for safekeeping.
 
-If you are importing a current Validator, stop both this node, and your original node, then replace the `node_key.json` and `priv_validator_key.json` in `$HOME/.und_mainchain/config` with your original keys, then start this new node again. 
+## statesync 
+Refreshes the trust height and hash of your node, and freeing any previously used storage
+#### Usage:
+```
+bash <(curl https://raw.githubusercontent.com/refundvalidator/RapidUND/main/statesync)
+```
+#### Notes:
+Script expects the und data dir to be located in `$HOME/.und_mainchain/data` similar to how rapidund would set up a node,
+if your configuration is different your results may vary.
 
-If both nodes are running at the same time, with the same keys, your Validator will be JAILED.
+***If you used rapidund to set up your node, the script should work without issue***
 
-Script will copy `node_key.json` and `priv_validator_key.json` into `$HOME/UNDBackup` for safekeeping.
+## 3-keyleth
+Prepares the node for upcoming upgrades, script name will change depending on the currently planned upgrade name, *Currently*, the scrip can be used with:
+#### Usage:
+```
+bash <(curl https://raw.githubusercontent.com/refundvalidator/RapidUND/main/3-keyleth)
+```
+#### Notes:
+Script expects the und cosmovisor dir to be located in `$HOME/.und_mainchain/cosmovisor` similar to how rapidund would set up a node,
+if your configuration is different your results may vary
 
-## *DETAILS:*
-
-The node deployed will be using default configuration given by the Unification Docs at https://docs.unification.io/.
-
-This script is meant to be used by experienced operators, used to quickly deploy a node in a time of need or when migrating to another machine, this is not recommended if you have not yet set up a node on your own.
-
+***If you used rapidund to set up your node, the script should work without issue***
 
 

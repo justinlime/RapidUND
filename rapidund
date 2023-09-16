@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Pretty colors :D
+RED='\033[0;31m'
+BLUE='\033[0;34m'
+GREEN='\033[0;32m'
+PURP='\033[1;35m'
+NOCOL='\033[0m'
+
 CHAIN=NONE
 MONIKER=NONE
 
@@ -72,6 +79,7 @@ EOF
 statesync_config() {
     HANDH=$(curl -s $HANDH_URL)
     HEIGHT=$(echo $HANDH | jq -r '.block.header.height')
+    # Decode Base64, then re-encode to HEX
     HASH=$(echo $HANDH | jq -r '.block_id.hash' | base64 -d | xxd -p -u -c 50)
     sed -i "s/enable = false/enable = true/" $HOME/.und_mainchain/config/config.toml
     sed -i "s/trust_height = 0/trust_height = $HEIGHT/" $HOME/.und_mainchain/config/config.toml
@@ -122,25 +130,25 @@ install_menu() {
 cat << EOF
 
 
-
+$(printf $BLUE)
 ██╗███╗   ██╗███████╗████████╗ █████╗ ██╗     ██╗     
 ██║████╗  ██║██╔════╝╚══██╔══╝██╔══██╗██║     ██║     
 ██║██╔██╗ ██║███████╗   ██║   ███████║██║     ██║     
 ██║██║╚██╗██║╚════██║   ██║   ██╔══██║██║     ██║     
 ██║██║ ╚████║███████║   ██║   ██║  ██║███████╗███████╗
 ╚═╝╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚══════╝╚══════╝
-
+$(printf $RED)
 !!!!!!CAUTION!!!!!!!
 
 This will DESTROY the following files if present:
-
+$(printf $GREEN)
 $HOME/.und_mainchain  
 $HOME/tempund
 $HOME/UNDBackup
 /usr/local/bin/und
 /usr/local/bin/cosmovisor
 /etc/systemd/system/und.service
-
+$(printf $NOCOL)
 |-------------------------|
 | key |      action       |
 |-----+-------------------|
@@ -152,12 +160,12 @@ $HOME/UNDBackup
 | 1   | Main Menu         | 
 |     |                   |
 |-------------------------|
-
+$(printf $BLUE)
 Current configuration:
 Moniker: $MONIKER
 Chain: $CHAIN
 Pruning: $PRUNING_PRESET
-
+$(printf $PURP)
 EOF
     while true
     do
@@ -166,10 +174,10 @@ EOF
             i)
                 if [ $MONIKER = "NONE" ] 
                 then
-                    echo -e "\n\nMoniker not set, cannot install\n"
+                    echo -e "${RED}\n\nMoniker not set, cannot install\n${NOCOL}"
                 elif [ $CHAIN = "NONE" ] 
                 then
-                    echo -e "\n\nChain not set, cannot install\n"
+                    echo -e "${RED}\n\nChain not set, cannot install\n${NOCOL}"
                 else
                     echo -e "\n"
                     remove_und
@@ -183,6 +191,10 @@ EOF
                 clear
                 main 
                 ;;
+            *)
+                clear
+                install_menu
+                ;;
         esac
     done
 }
@@ -190,26 +202,25 @@ EOF
 uninstall_menu() {
 cat << EOF
 
-
-
+$(printf $BLUE)
 ██╗   ██╗███╗   ██╗██╗███╗   ██╗███████╗████████╗ █████╗ ██╗     ██╗     
 ██║   ██║████╗  ██║██║████╗  ██║██╔════╝╚══██╔══╝██╔══██╗██║     ██║     
 ██║   ██║██╔██╗ ██║██║██╔██╗ ██║███████╗   ██║   ███████║██║     ██║     
 ██║   ██║██║╚██╗██║██║██║╚██╗██║╚════██║   ██║   ██╔══██║██║     ██║     
 ╚██████╔╝██║ ╚████║██║██║ ╚████║███████║   ██║   ██║  ██║███████╗███████╗
  ╚═════╝ ╚═╝  ╚═══╝╚═╝╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚══════╝╚══════╝
-
+$(printf $RED)
 !!!!!!CAUTION!!!!!!!
 
 This will DESTROY the following files if present:
-
+$(printf $GREEN)
 $HOME/.und_mainchain  
 $HOME/tempund
 $HOME/UNDBackup
 /usr/local/bin/und
 /usr/local/bin/cosmovisor
 /etc/systemd/system/und.service
-
+$(printf $NOCOL)
 |-------------------------|
 | key |      action       |
 |-----+-------------------|
@@ -221,7 +232,7 @@ $HOME/UNDBackup
 | 1   | Main Menu         | 
 |     |                   |
 |-------------------------|
-
+$(printf $PURP)
 EOF
     while true
     do
@@ -237,6 +248,10 @@ EOF
                 clear
                 main 
                 ;;
+            *)
+                clear
+                uninstall_menu
+                ;;
         esac
     done
 }
@@ -247,16 +262,16 @@ chain_menu() {
 cat << EOF
 
 
-
+$(printf $BLUE)
  ██████╗██╗  ██╗ █████╗ ██╗███╗   ██╗
 ██╔════╝██║  ██║██╔══██╗██║████╗  ██║
 ██║     ███████║███████║██║██╔██╗ ██║
 ██║     ██╔══██║██╔══██║██║██║╚██╗██║
 ╚██████╗██║  ██║██║  ██║██║██║ ╚████║
  ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝
-
+$(printf $RED)
 Select the chain this node should operate on
-
+$(printf $NOCOL)
 |-------------------------|
 | key |      action       |
 |-----+-------------------|
@@ -269,9 +284,9 @@ Select the chain this node should operate on
 | 1   | Main Menu         | 
 |     |                   |
 |-------------------------|
-
+$(printf $BLUE)
 Current Chain: $CHAIN
-
+$(printf $PURP)
 EOF
     while true
     do
@@ -293,6 +308,10 @@ EOF
                 clear
                 main 
                 ;;
+            *)
+                clear
+                chain_menu
+                ;;
         esac
     done
 }
@@ -301,16 +320,16 @@ moniker_menu() {
 cat << EOF
 
 
-
+$(printf $BLUE)
 ███╗   ███╗ ██████╗ ███╗   ██╗██╗██╗  ██╗███████╗██████╗ 
 ████╗ ████║██╔═══██╗████╗  ██║██║██║ ██╔╝██╔════╝██╔══██╗
 ██╔████╔██║██║   ██║██╔██╗ ██║██║█████╔╝ █████╗  ██████╔╝
 ██║╚██╔╝██║██║   ██║██║╚██╗██║██║██╔═██╗ ██╔══╝  ██╔══██╗
 ██║ ╚═╝ ██║╚██████╔╝██║ ╚████║██║██║  ██╗███████╗██║  ██║
 ╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
-
+$(printf $RED)
 Set the moniker for this node
-
+$(printf $NOCOL)
 |-------------------------|
 | key |      action       |
 |-----+-------------------|
@@ -322,9 +341,9 @@ Set the moniker for this node
 | 1   | Main Menu         | 
 |     |                   |
 |-------------------------|
-
+$(printf $BLUE)
 Current Moniker: $MONIKER
-
+$(printf $PURP)
 EOF
     while true
     do
@@ -340,6 +359,10 @@ EOF
                 clear
                 main 
                 ;;
+            *)
+                clear
+                moniker_menu
+                ;;
         esac
     done
 }
@@ -348,16 +371,16 @@ pruning_menu() {
 cat << EOF
 
 
-
+$(printf $BLUE)
 ██████╗ ██████╗ ██╗   ██╗███╗   ██╗██╗███╗   ██╗ ██████╗ 
 ██╔══██╗██╔══██╗██║   ██║████╗  ██║██║████╗  ██║██╔════╝ 
 ██████╔╝██████╔╝██║   ██║██╔██╗ ██║██║██╔██╗ ██║██║  ███╗
 ██╔═══╝ ██╔══██╗██║   ██║██║╚██╗██║██║██║╚██╗██║██║   ██║
 ██║     ██║  ██║╚██████╔╝██║ ╚████║██║██║ ╚████║╚██████╔╝
 ╚═╝     ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝╚═╝  ╚═══╝ ╚═════╝ 
-
+$(printf $RED)
 Set custom pruning options for your node, or select a preset
-
+$(printf $NOCOL)
 |-------------------------|
 | key |      action       |
 |-----+-------------------|
@@ -377,14 +400,14 @@ Set custom pruning options for your node, or select a preset
 | 1   | Main Menu         | 
 |     |                   |
 |-------------------------|
-
+$(printf $BLUE)
 Current pruning config: 
 
 Preset: $PRUNING_PRESET
 Keep-Recent: $PRUNING_RECENT
 Keep-Every: $PRUNING_EVERY
 Pruning-Interval: $PRUNING_INTERVAL
-
+$(printf $PURP)
 EOF
     while true
     do
@@ -445,6 +468,10 @@ EOF
                 clear
                 main 
                 ;;
+            *)
+                clear
+                pruning_menu
+                ;;
         esac
     done
 }
@@ -454,19 +481,19 @@ main() {
     cat << EOF 
 
 
-
+$(printf $BLUE)
 ██████╗  █████╗ ██████╗ ██╗██████╗ ██╗   ██╗███╗   ██╗██████╗ 
 ██╔══██╗██╔══██╗██╔══██╗██║██╔══██╗██║   ██║████╗  ██║██╔══██╗
 ██████╔╝███████║██████╔╝██║██║  ██║██║   ██║██╔██╗ ██║██║  ██║
 ██╔══██╗██╔══██║██╔═══╝ ██║██║  ██║██║   ██║██║╚██╗██║██║  ██║
 ██║  ██║██║  ██║██║     ██║██████╔╝╚██████╔╝██║ ╚████║██████╔╝
 ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚═════╝  ╚═════╝ ╚═╝  ╚═══╝╚═════╝ 
-
+$(printf $RED)
 This script is made to rapidly deploy a Unification Node, for Testnet or Mainnet. 
 Intended for expirienced operators.
 
 If there are any issues please report them on github.
-
+$(printf $NOCOL)
 |-------------------------|
 | key |      action       |
 |-----+-------------------|
@@ -483,7 +510,7 @@ If there are any issues please report them on github.
 | 4   | Pruning           | 
 |     |                   |
 |-------------------------|
-
+$(printf $PURP)
 EOF
     while true
     do
@@ -515,6 +542,9 @@ EOF
             4)
                 clear
                 pruning_menu
+                ;;
+            *)
+                main
                 ;;
         esac
     done
