@@ -77,17 +77,19 @@ EOF
 }
 
 statesync_config() {
-    HANDH=$(curl -s $HANDH_URL)
+    HANDH=$(curl -s "$HANDH_URL/latest")
     HEIGHT=$(echo $HANDH | jq -r '.block.header.height')
-    # Decode Base64, then re-encode to HEX
-    HASH=$(echo $HANDH | jq -r '.block_id.hash' | base64 -d | xxd -p -u -c 50)
-    sed -i "s/enable = false/enable = true/" $HOME/.und_mainchain/config/config.toml
-    sed -i "s/trust_height = 0/trust_height = $HEIGHT/" $HOME/.und_mainchain/config/config.toml
-    sed -i 's/trust_hash = ""/trust_hash = "'$HASH'"/' $HOME/.und_mainchain/config/config.toml
-    sed -i 's/rpc_servers = ""/rpc_servers = "'$RPC'"/' $HOME/.und_mainchain/config/config.toml
-    sed -i 's/discovery_time = "15s"/discovery_time = "30s"/' $HOME/.und_mainchain/config/config.toml
-    sed -i 's/chunk_request_timeout = "10s"/chunk_request_timeout = "60s"/' $HOME/.und_mainchain/config/config.toml
-    sed -i 's/seeds = ""/seeds = "'$SEEDS'"/' $HOME/.und_mainchain/config/config.toml
+    HEIGHT=$((HEIGHT - 5000))
+    HANDH=$(curl -s "$HANDH_URL/$HEIGHT")
+    HASH=$(echo $HANDH | jq -r '.block_id.hash' | base64 -d | xxd -p -u -c 100)
+
+    sed -i "s/enable.*/enable = true/" $HOME/.und_mainchain/config/config.toml
+    sed -i "s/trust_height.*/trust_height = $HEIGHT/" $HOME/.und_mainchain/config/config.toml
+    sed -i 's/trust_hash.*/trust_hash = "'$HASH'"/' $HOME/.und_mainchain/config/config.toml
+    sed -i 's|rpc_servers.*|rpc_servers = "'$RPC'"|' $HOME/.und_mainchain/config/config.toml
+    sed -i 's/discovery_time.*/discovery_time = "30s"/' $HOME/.und_mainchain/config/config.toml
+    sed -i 's/chunk_request_timeout.*/chunk_request_timeout = "60s"/' $HOME/.und_mainchain/config/config.toml
+    sed -i 's/seeds.*/seeds = "'$SEEDS'"/' $HOME/.und_mainchain/config/config.toml
 }
 
 set_pruning() {
@@ -110,8 +112,8 @@ set_mainnet() {
     COSMOVISOR=https://github.com/cosmos/cosmos-sdk/releases/download/cosmovisor%2Fv1.2.0/cosmovisor-v1.2.0-linux-amd64.tar.gz
     UPGRADE=NONE
     SEEDS=0c2b65bc604a18a490f5f55bb7b4140cfb512ced@seed1.unification.io:26656,e66e0f89af19da09f676c85b262d591b8c2bb9d8@seed2.unification.io:26656
-    RPC=sync1.unification.io:26657,sync2.unification.io:26657
-    HANDH_URL=https://rest.unification.io/cosmos/base/tendermint/v1beta1/blocks/latest
+    RPC=https://rpc1.unification.io:443,https://rpc.unification.chainmasters.ninja:443
+    HANDH_URL=https://rest.unification.io/cosmos/base/tendermint/v1beta1/blocks
     CHAIN=MainNet
 }
 
@@ -582,6 +584,7 @@ EOF
         echo "xxd is not installed, please refer to README for dependency list"
         exit
     fi
+
 }
 startup_check
 main

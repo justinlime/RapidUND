@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 startup_check() {
     # Ensure root user is not running the script
     if [ "$EUID" = 0 ]; then
@@ -34,8 +33,37 @@ EOF
         exit
     fi
 }
+backup(){
+    clear
+    echo -e "Backup ${HOME}/.und_mainchain to ${HOME}/.und_mainchain.bak?\n"
+    echo -e "You need atleast $(du -sh $HOME/.und_mainchain | awk '{print $1}') available this operation\n"
+    while true
+    do
+        read -p "Yes or No [y/n] > " -n 1 key 
+        case $key in
+            y)
+                cp -r $HOME/.und_mainchain $HOME/.und_mainchain.bak
+                clear
+                echo -e "${HOME}.und_mainchain.bak created\n"
+                break
+                ;;
+            n)
+                clear
+                break
+                ;;
+            *)
+                clear
+                backup
+                ;;
+        esac
+    done
+
+}
 
 startup_check
+backup
+echo "Starting..."
+sleep 5
 sudo systemctl stop und
 
 mv $HOME/.und_mainchain/data/priv_validator_state.json $HOME/.und_mainchain/priv_validator_state.json
@@ -43,14 +71,26 @@ rm -rf $HOME/.und_mainchain/data/*
 rm -rf $HOME/.und_mainchain/config/addrbook.json
 mv $HOME/.und_mainchain/priv_validator_state.json $HOME/.und_mainchain/data/priv_validator_state.json
 
-HANDH_URL=https://rest.unification.io/cosmos/base/tendermint/v1beta1/blocks/latest
-HANDH=$(curl -s $HANDH_URL)
-HEIGHT=$(echo $HANDH | jq -r '.block.header.height')
-# Decode Base64, then re-encode to HEX
-HASH=$(echo $HANDH | jq -r '.block_id.hash' | base64 -d | xxd -p -u -c 50)
+SEEDS=0c2b65bc604a18a490f5f55bb7b4140cfb512ced@seed1.unification.io:26656,e66e0f89af19da09f676c85b262d591b8c2bb9d8@seed2.unification.io:26656
+HANDH_URL=https://rest.unification.io/cosmos/base/tendermint/v1beta1/blocks
 
+HANDH=$(curl -s "$HANDH_URL/latest")
+HEIGHT=$(echo $HANDH | jq -r '.block.header.height')
+HEIGHT=$((HEIGHT - 5000))
+HANDH=$(curl -s "$HANDH_URL/$HEIGHT")
+
+# Decode Base64, then re-encode to HEX
+HASH=$(echo $HANDH | jq -r '.block_id.hash' | base64 -d | xxd -p -u -c 100)
+RPC="https://rpc1.unification.io:443,https://rpc.unification.chainmasters.ninja:443"
+
+sed -i "s/enable.*/enable = true/" $HOME/.und_mainchain/config/config.toml
 sed -i "s/trust_height.*/trust_height = $HEIGHT/" $HOME/.und_mainchain/config/config.toml
 sed -i 's/trust_hash.*/trust_hash = "'$HASH'"/' $HOME/.und_mainchain/config/config.toml
+sed -i 's|rpc_servers.*|rpc_servers = "'$RPC'"|' $HOME/.und_mainchain/config/config.toml
+sed -i 's/discovery_time.*/discovery_time = "30s"/' $HOME/.und_mainchain/config/config.toml
+sed -i 's/chunk_request_timeout.*/chunk_request_timeout = "60s"/' $HOME/.und_mainchain/config/config.toml
+sed -i 's/seeds.*/seeds = "'$SEEDS'"/' $HOME/.und_mainchain/config/config.toml
+
 
 sudo systemctl restart und
 sudo journalctl -u und -f -o cat
