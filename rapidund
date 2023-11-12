@@ -112,7 +112,7 @@ set_mainnet() {
     COSMOVISOR=https://github.com/cosmos/cosmos-sdk/releases/download/cosmovisor%2Fv1.2.0/cosmovisor-v1.2.0-linux-amd64.tar.gz
     UPGRADE=NONE
     SEEDS=0c2b65bc604a18a490f5f55bb7b4140cfb512ced@seed1.unification.io:26656,e66e0f89af19da09f676c85b262d591b8c2bb9d8@seed2.unification.io:26656
-    RPC=https://rpc1.unification.io:443,https://rpc.unification.chainmasters.ninja:443
+    RPC="https://rpc1.unification.io:443,https://rpc.unification.chainmasters.ninja:443"
     HANDH_URL=https://rest.unification.io/cosmos/base/tendermint/v1beta1/blocks
     CHAIN=MainNet
 }
