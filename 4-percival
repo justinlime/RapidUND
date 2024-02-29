@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#Reverts changes and exits if commands fail
+# Reverts changes and exits if commands fail
 revert_and_exit () {
     if [ $? -ne 0 ] 
     then
@@ -14,11 +14,11 @@ revert_and_exit () {
     fi
 }
 
-#Backup cosmovisor dir
+# Backup cosmovisor dir
 sudo systemctl stop und
 cp -r $HOME/.und_mainchain/cosmovisor $HOME/.und_mainchain/cosmovisor.old
 
-#Genesis
+# Genesis
 mkdir -p $HOME/tmp && cd $HOME/tmp && \
 wget https://github.com/unification-com/mainchain/releases/download/1.5.1/und_v1.5.1_linux_x86_64.tar.gz && \
 tar -zxvf und_v1.5.1_linux_x86_64.tar.gz && \
@@ -27,16 +27,7 @@ mv und $HOME/.und_mainchain/cosmovisor/genesis/bin  && \
 rm -rf $HOME/tmp 
 revert_and_exit
 
-#Current
-mkdir -p $HOME/tmp && cd $HOME/tmp && \
-wget https://github.com/unification-com/mainchain/releases/download/v1.7.0/und_v1.7.0_linux_x86_64.tar.gz && \
-tar -zxvf und_v1.7.0_linux_x86_64.tar.gz && \
-mkdir -p $HOME/.und_mainchain/cosmovisor/upgrades/2-grog/bin && \
-mv und $HOME/.und_mainchain/cosmovisor/upgrades/2-grog/bin && \
-rm -rf $HOME/tmp 
-revert_and_exit
-
-#Upgrade
+# Current
 mkdir -p $HOME/tmp && cd $HOME/tmp && \
 wget https://github.com/unification-com/mainchain/releases/download/v1.8.2/und_v1.8.2_linux_x86_64.tar.gz && \
 tar -zxvf und_v1.8.2_linux_x86_64.tar.gz && \
@@ -45,9 +36,18 @@ mv und $HOME/.und_mainchain/cosmovisor/upgrades/3-keyleth/bin && \
 rm -rf $HOME/tmp
 revert_and_exit
 
-#Reset current, just to be sure
+# Upgrade
+mkdir -p $HOME/tmp && cd $HOME/tmp && \
+wget https://github.com/unification-com/mainchain/releases/download/v1.9.0/und_v1.9.0_linux_x86_64.tar.gz && \
+tar -zxvf und_v1.9.0_linux_x86_64.tar.gz && \
+mkdir -p $HOME/.und_mainchain/cosmovisor/upgrades/4-percival/bin && \
+mv und $HOME/.und_mainchain/cosmovisor/upgrades/4-percival/bin && \
+rm -rf $HOME/tmp
+revert_and_exit
+
+# Reset current, just to be sure
 rm -rf $HOME/.und_mainchain/cosmovisor/current && \
-ln -s $HOME/.und_mainchain/cosmovisor/upgrades/2-grog $HOME/.und_mainchain/cosmovisor/current && \
+ln -s $HOME/.und_mainchain/cosmovisor/upgrades/3-keyleth $HOME/.und_mainchain/cosmovisor/current && \
 clear
 revert_and_exit
 
@@ -58,7 +58,7 @@ echo "Current:"
 $HOME/.und_mainchain/cosmovisor/current/bin/und version --log_level=""
 
 echo "Upgrade:"
-$HOME/.und_mainchain/cosmovisor/upgrades/3-keyleth/bin/und version --log_level=""
+$HOME/.und_mainchain/cosmovisor/upgrades/4-percival/bin/und version --log_level=""
 
 sudo systemctl restart und
 sleep 10

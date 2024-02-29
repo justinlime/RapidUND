@@ -33,11 +33,11 @@ if your configuration is different your results may vary.
 
 ***If you used rapidund to set up your node, the script should work without issue***
 
-## 3-keyleth
+## 4-percival
 Prepares the node for upcoming upgrades, script name will change depending on the currently planned upgrade name, *Currently*, the scrip can be used with:
 #### Usage:
 ```
-bash <(curl https://raw.githubusercontent.com/refundvalidator/RapidUND/main/3-keyleth)
+bash <(curl https://raw.githubusercontent.com/refundvalidator/RapidUND/main/4-percival)
 ```
 #### Notes:
 Script expects the und cosmovisor dir to be located in `$HOME/.und_mainchain/cosmovisor` similar to how rapidund would set up a node,
