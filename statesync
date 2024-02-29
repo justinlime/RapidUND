@@ -61,7 +61,7 @@ backup(){
 }
 
 startup_check
-backup
+# backup
 echo "Starting..."
 sleep 5
 sudo systemctl stop und
