@@ -108,7 +108,7 @@ start_und() {
 
 set_mainnet() {
     GENESIS=https://raw.githubusercontent.com/unification-com/mainnet/master/latest/genesis.json
-    UND=https://github.com/unification-com/mainchain/releases/download/v1.8.2/und_v1.8.2_linux_x86_64.tar.gz
+    UND=https://github.com/unification-com/mainchain/releases/download/v1.9.0/und_v1.9.0_linux_x86_64.tar.gz
     COSMOVISOR=https://github.com/cosmos/cosmos-sdk/releases/download/cosmovisor%2Fv1.2.0/cosmovisor-v1.2.0-linux-amd64.tar.gz
     UPGRADE=NONE
     SEEDS=0c2b65bc604a18a490f5f55bb7b4140cfb512ced@seed1.unification.io:26656,e66e0f89af19da09f676c85b262d591b8c2bb9d8@seed2.unification.io:26656
