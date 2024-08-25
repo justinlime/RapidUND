@@ -58,7 +58,7 @@ echo "Current:"
 $HOME/.und_mainchain/cosmovisor/current/bin/und version --log_level=""
 
 echo "Upgrade:"
-$HOME/.und_mainchain/cosmovisor/upgrades/4-percival/bin/und version --log_level=""
+$HOME/.und_mainchain/cosmovisor/upgrades/5-pike/bin/und version --log_level=""
 
 sudo systemctl restart und
 sleep 10
