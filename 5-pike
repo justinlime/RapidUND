@@ -29,15 +29,6 @@ revert_and_exit
 
 # Current
 mkdir -p $HOME/tmp && cd $HOME/tmp && \
-wget https://github.com/unification-com/mainchain/releases/download/v1.8.2/und_v1.8.2_linux_x86_64.tar.gz && \
-tar -zxvf und_v1.8.2_linux_x86_64.tar.gz && \
-mkdir -p $HOME/.und_mainchain/cosmovisor/upgrades/3-keyleth/bin && \
-mv und $HOME/.und_mainchain/cosmovisor/upgrades/3-keyleth/bin && \
-rm -rf $HOME/tmp
-revert_and_exit
-
-# Upgrade
-mkdir -p $HOME/tmp && cd $HOME/tmp && \
 wget https://github.com/unification-com/mainchain/releases/download/v1.9.0/und_v1.9.0_linux_x86_64.tar.gz && \
 tar -zxvf und_v1.9.0_linux_x86_64.tar.gz && \
 mkdir -p $HOME/.und_mainchain/cosmovisor/upgrades/4-percival/bin && \
@@ -45,9 +36,18 @@ mv und $HOME/.und_mainchain/cosmovisor/upgrades/4-percival/bin && \
 rm -rf $HOME/tmp
 revert_and_exit
 
+# Upgrade
+mkdir -p $HOME/tmp && cd $HOME/tmp && \
+wget https://github.com/unification-com/mainchain/releases/download/v1.10.1/und_v1.10.1_linux_x86_64.tar.gz && \
+tar -zxvf und_v1.10.1_linux_x86_64.tar.gz && \
+mkdir -p $HOME/.und_mainchain/cosmovisor/upgrades/5-pike/bin && \
+mv und $HOME/.und_mainchain/cosmovisor/upgrades/5-pike/bin && \
+rm -rf $HOME/tmp
+revert_and_exit
+
 # Reset current, just to be sure
 rm -rf $HOME/.und_mainchain/cosmovisor/current && \
-ln -s $HOME/.und_mainchain/cosmovisor/upgrades/3-keyleth $HOME/.und_mainchain/cosmovisor/current && \
+ln -s $HOME/.und_mainchain/cosmovisor/upgrades/4-percival $HOME/.und_mainchain/cosmovisor/current && \
 clear
 revert_and_exit
 

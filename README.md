@@ -37,7 +37,7 @@ if your configuration is different your results may vary.
 Prepares the node for upcoming upgrades, script name will change depending on the currently planned upgrade name, *Currently*, the scrip can be used with:
 #### Usage:
 ```
-bash <(curl https://raw.githubusercontent.com/refundvalidator/RapidUND/main/4-percival)
+bash <(curl https://raw.githubusercontent.com/refundvalidator/RapidUND/main/5-pike)
 ```
 #### Notes:
 Script expects the und cosmovisor dir to be located in `$HOME/.und_mainchain/cosmovisor` similar to how rapidund would set up a node,
